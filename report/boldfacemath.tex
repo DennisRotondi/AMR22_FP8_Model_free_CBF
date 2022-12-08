@@ -1,0 +1,237 @@
+%%%% source %%%%%%%%
+% DLR, 2005; later edits ADL %
+%%%%%%%%%%%%%%%%
+
+%%%%  requirements %%%%
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%usepackage{accents} 
+% improves spacing (e.g., of \dddots)
+
+%%%%%%%%%%%%%%%%
+%%%%%%  general  %%%%%
+%%%%%%%%%%%%%%%%
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\boldsymbol{#1}}
+
+\newcommand{\diff}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\diffs}[3]{\frac{\partial^2 #1}{
+\ifx#2#3 
+\partial #2^2
+\else
+\partial #2 \partial #3
+\fi
+}}
+%\newcommand{\norm}[1]{{\left \| {#1} \right \|}}
+\newcommand{\de}[1]{{\left | {#1} \right |}}
+
+%\newcommand{\dddott}[1]{{#1}^{[3]}}
+\newcommand{\dddott}[1]{{\stackrel{\boldsymbol{...}}{#1}}}
+%\newcommand{\ddddott}[1]{{#1}^{[4]}}
+\newcommand{\ddddott}[1]{{\stackrel{\boldsymbol{....}}{#1}}}
+
+\newcommand{\normm}[1]{{\left \| {#1} \right \|}}
+
+%%%%%%%%%%%%%%%%
+%%% vectors (low case)  %%%
+%%%%%%%%%%%%%%%%
+
+% Zero vector
+\newcommand{\zerov}{\vect{0}}
+
+\newcommand{\av}{\vect{a}}
+\newcommand{\bv}{\vect{b}}
+\newcommand{\cv}{\vect{c}}
+\newcommand{\dcv}{\dot{\vect{c}}}
+\newcommand{\ddcv}{\ddot{\vect{c}}}
+\newcommand{\dv}{\vect{d}}
+\newcommand{\ev}{\vect{e}}
+\newcommand{\dev}{\dot{\vect{e}}}
+\newcommand{\ddev}{\ddot{\vect{e}}}
+\newcommand{\fv}{\vect{f}}
+\newcommand{\gv}{\vect{g}}
+\newcommand{\gbv}{\bar{\vect{g}}}
+\newcommand{\dgv}{\dot{\vect{g}}}
+\newcommand{\ddgv}{\ddot{\vect{g}}}
+\newcommand{\hv}{\vect{h}}
+\newcommand{\kv}{\vect{k}}
+\newcommand{\lv}{\vect{l}}
+\newcommand{\mv}{\vect{m}}
+\newcommand{\nv}{\vect{n}}
+\newcommand{\dnv}{\dot{\vect{n}}}
+\newcommand{\ddnv}{\ddot{\vect{n}}}
+\newcommand{\ov}{\vect{o}}
+\newcommand{\pv}{\vect{p}}
+\newcommand{\dpv}{\dot{\vect{p}}}
+\newcommand{\ddpv}{\ddot{\vect{p}}}
+\newcommand{\qv}{{\vect{q}}}
+\newcommand{\dqv}{\dot{\vect{q}}}
+\newcommand{\ddqv}{\ddot{\vect{q}}}
+\newcommand{\dddqv}{\dddott{\vect{q}}}
+\newcommand{\ddddqv}{\ddddott{\vect{q}}}
+\newcommand{\qbv}{\bar{\vect{q}}}
+\newcommand{\dqbv}{\dot{\bar{\vect{q}}}}
+\newcommand{\ddqbv}{\ddot{\bar{\vect{q}}}}
+\newcommand{\dddqbv}{\dddott{\bar{\vect{q}}}}
+\newcommand{\ddddqbv}{\ddddott{\bar{\vect{q}}}}
+\newcommand{\qhv}{\hat{\vect{q}}}
+\newcommand{\qtbv}{\tilde{\bar{\vect{q}}}}
+\newcommand{\rv}{{\vect{r}}}
+\newcommand{\drv}{\dot{\vect{r}}}
+\newcommand{\sv}{\vect{s}}
+\newcommand{\dsv}{\dot{\vect{s}}}
+\newcommand{\uv}{\vect{u}}
+\newcommand{\vv}{\vect{v}}
+\newcommand{\dvv}{\dot{\vect{v}}}
+\newcommand{\wv}{\vect{w}}
+\newcommand{\dwv}{\dot{\vect{w}}}
+\newcommand{\xv}{\vect{x}}
+\newcommand{\dxv}{\dot{\vect{x}}}
+\newcommand{\ddxv}{\ddot{\vect{x}}}
+\newcommand{\dddxv}{\dddott{\vect{x}}}
+\newcommand{\ddddxv}{\ddddott{\vect{x}}}
+\newcommand{\txv}{\vect{\tilde{x}}}
+\newcommand{\dtxv}{\dot{\tilde{\vect{x}}}}
+\newcommand{\ddtxv}{\ddot{\tilde{\vect{x}}}}
+\newcommand{\dddtxv}{\dddott{\tilde{\vect{x}}}}
+\newcommand{\ddddtxv}{\ddddott{\tilde{\vect{x}}}}
+\newcommand{\yv}{\vect{y}}
+\newcommand{\ybv}{\bar{\vect{y}}}
+\newcommand{\dyv}{\dot{\vect{y}}}
+\newcommand{\ytv}{\tilde {\vect{y}}}
+\newcommand{\zv}{\vect{z}}
+\newcommand{\dzv}{\dot{\vect{z}}}
+\newcommand{\ddzv}{\ddot{\vect{z}}}
+
+%%%%%%%%%%%%%%%%
+% vectors (low case) in Greek %
+%%%%%%%%%%%%%%%%
+
+\newcommand{\alphav}{\vect{\alpha}}
+\newcommand{\betav}{\vect{\beta}}
+\newcommand{\gammav}{\vect{\gamma}}
+\newcommand{\lambdav}{\vect{\lambda}}
+\newcommand{\muv}{\vect{\mu}}
+\newcommand{\etav}{\vect{\eta}}
+\newcommand{\deltav}{\vect{\delta}}
+\newcommand{\ddeltav}{\dot{\vect{\delta}}}
+
+\newcommand{\phiv}{\vect{\phi}}
+\newcommand{\dphiv}{\dot{\vect{\phi}}}
+\newcommand{\ddphiv}{\ddot{\vect{\phi}}}
+
+\newcommand{\psiv}{\vect{\psi}}
+
+\newcommand{\sigmav}{\vect{\sigma}}
+\newcommand{\dsigmav}{\dot{\vect{\sigma}}}
+
+\newcommand{\piv}{\vect{\pi}}
+
+\newcommand{\tauv}{\vect{\tau}}
+\newcommand{\dtauv}{\dot{\vect{\tau}}}
+\newcommand{\ddtauv}{\ddot{\vect{\tau}}}
+\newcommand{\thetav}{\vect{\theta}}
+\newcommand{\dthetav}{\dot{\vect{\theta}}}
+\newcommand{\ddthetav}{\ddot{\vect{\theta}}}
+\newcommand{\thetavt}{\tilde{\vect{\theta}}}
+\newcommand{\nuv}{\vect{\nu}}
+\newcommand{\omegav}{\vect{\omega}}
+\newcommand{\xiv}{\vect{\xi}}
+\newcommand{\dxiv}{\dot{\vect{\xi}}}
+
+%%%%%%%%%%%%%%%%
+%%   vectors (capitalized)   %%
+%%%%%%%%%%%%%%%%
+
+\newcommand{\Fv}{\vect{F}}
+\newcommand{\Mv}{\vect{M}}
+\newcommand{\Tv}{\vect{T}}
+\newcommand{\Vv}{\vect{V}}
+\newcommand{\Wv}{\vect{W}}
+
+%%%%%%%%%%%%%%%%%
+% vectors (capitalized) in Greek %
+%%%%%%%%%%%%%%%%%
+
+\newcommand{\Alphav}{\vect{\Alpha}}
+\newcommand{\Betav}{\vect{\Beta}}
+\newcommand{\Gammav}{\vect{\Gamma}}
+\newcommand{\Thetam}{\vect{\Theta}}
+\newcommand{\dThetam}{\dot{\Thetam}}
+\newcommand{\ddThetam}{\ddot{\Thetam}}
+
+%%%%%%%%%%%%%%%%
+%%  matrices (capitalized)  %%
+%%%%%%%%%%%%%%%%
+
+% Unit matrix
+\newcommand{\IIm}{\mat{I}}
+% Zero matrix
+\newcommand{\zerom}{\mat{O}}
+
+\newcommand{\Am}{\mat{A}}
+\newcommand{\Bm}{\mat{B}}
+\newcommand{\Cm}{\mat{C}}
+\newcommand{\dCm}{\dot{\Cm}}
+\newcommand{\ddCm}{\ddot{\Cm}}
+\newcommand{\dddCm}{\dddott{\Cm}}
+\newcommand{\Dm}{\mat{D}}
+\newcommand{\Em}{\mat{E}}
+\newcommand{\Fm}{\mat{F}}
+\newcommand{\Gm}{\mat{G}}
+\newcommand{\Hm}{\mat{H}}
+\newcommand{\Jm}{\mat{J}}
+\newcommand{\Lm}{\mat{L}}
+\newcommand{\Jbm}{\bar{\mat{J}}}
+\newcommand{\dJm}{\dot{\Jm}}
+\newcommand{\ddJm}{\ddot{\Jm}}
+\newcommand{\dddJm}{\dddott{\Jm}}
+\newcommand{\Km}{\mat{K}}
+\newcommand{\Mm}{\mat{M}}
+\newcommand{\dMm}{\dot{\Mm}}
+\newcommand{\ddMm}{\ddot{\Mm}}
+\newcommand{\dddMm}{\dddott{\Mm}}
+\newcommand{\Nm}{\mat{N}}
+\newcommand{\Pm}{\mat{P}}
+\newcommand{\Qm}{\mat{Q}}
+\newcommand{\Rm}{\mat{R}}
+\newcommand{\Sm}{\mat{S}}
+\newcommand{\Tm}{\mat{T}}
+\newcommand{\Vm}{\mat{V}}
+\newcommand{\Um}{\mat{U}}
+\newcommand{\Wm}{\mat{W}}
+\newcommand{\Xm}{\mat{X}}
+\newcommand{\Ym}{\mat{Y}}
+\newcommand{\Zm}{\mat{Z}}
+
+%%%%%%%%%%%%%%%%%%
+% matrices (capitalized) in Greek %
+%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Deltam}{\mat{\Delta}}
+\newcommand{\Sigmam}{\mat{\Sigma}}
+\newcommand{\Gammam}{\mat{\Gamma}}
+\newcommand{\Lambdam}{\mat{\Lambda}}
+
+%%%%%%%%%%%%%%%%%%
+%%% matrices (calligraphic)  %%%
+%%%%%%%%%%%%%%%%%%
+
+\newcommand{\calAm}{\mat{\cal A}}
+\newcommand{\calCm}{\mat{\cal C}}
+\newcommand{\calMm}{\mat{\cal M}}
+\newcommand{\dcalMm}{\dot{\calMm}}
+
+%%%%%%%%%%%%%%%%
+%%% matrices with indices %%
+%%%%%%%%%%%%%%%%
+
+\newcommand{\Jqbm}{\Jm_{\bar q}}
+\newcommand{\Jgm}{\Jm_{g}}
+\newcommand{\Jhm}{\Jm_{h}}
+
+%etc.
+
+%%%%% end %%%%%%%
