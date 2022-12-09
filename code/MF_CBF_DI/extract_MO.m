@@ -13,18 +13,20 @@ set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 29 2
 qstart =[0,0];          % starting configuration
 qdotstart =[0,0];       % starting initial velocity
 simTime = 50;           % simulation time
-r = 0.5;                % radius obstacle
+r1 = 0.5;               % radius obstacle
 qg =[2.7, -1.8];        % desired configuration
-alpha = 0.1;            % barrier certificate param 
+alpha = 0.01;           % barrier certificate param 
 qO1 = [1;-0.6];         % 1st obstacle position
 qO2 = [3;-1];           % 2nd obstacle position
 qO3 = [2;-1.5];         % 3rd obstacle position
 qO4 = [0.8;-1.8];       % 4th obstacle position
+qO5 = [1.35;-1.5];      % 5th obstacle position
+r = [r1 r1 r1 r1 0.05];
 Kp = 0.2 ;              % proportional term
 Kd = 1 ;                % derivative term 
-threshold_skip = 0.05;  % 0.05
+threshold_skip = 0;  % 0.05
 
-obs = [qO1, qO2, qO3, qO4];    % obstacles
+obs = [qO1, qO2, qO3, qO4, qO5];    % obstacles
 
 out = sim('DDICBF_MO');
 t = out.tout;
@@ -44,10 +46,10 @@ for i = 1:num_obs
     ob = obs(:,i);
     hold on;
     th = 0:pi/50:2*pi;
-    xunit = r * cos(th) + ob(1);
-    yunit = r * sin(th) + ob(2);
+    xunit = r(i) * cos(th) + ob(1);
+    yunit = r(i) * sin(th) + ob(2);
     col = rand(1,3);
-    h = plot(xunit, yunit,'color', 'k','LineWidth',6);
+    h = plot(xunit, yunit,'color', 'k','LineWidth',0.1);
     fill(xunit, yunit, col)
 end
 plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',15,'MarkerFaceColor','red'); hold on;
