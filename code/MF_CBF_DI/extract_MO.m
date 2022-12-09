@@ -8,32 +8,33 @@
 clear 
 close all
 clc
-set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 29 20]);
+% set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 
 qstart =[0,0];          % starting configuration
 qdotstart =[0,0];       % starting initial velocity
-simTime = 50;           % simulation time
-r1 = 0.5;               % radius obstacle
-qg =[2.7, -1.8];        % desired configuration
-alpha = 0.01;           % barrier certificate param 
-qO1 = [1;-0.6];         % 1st obstacle position
-qO2 = [3;-1];           % 2nd obstacle position
+simTime = 150;          % simulation time
+r1 = 0.75;              % radius obstacle
+M = 10*eye(2);          % inertia matrix
+qg =[4, -1];            % desired configuration
+alpha = 0.1;            % barrier certificate param 
+qO1 = [1.5;0];          % 1st obstacle position
+qO2 = [3;-1.5];         % 2nd obstacle position
 qO3 = [2;-1.5];         % 3rd obstacle position
 qO4 = [0.8;-1.8];       % 4th obstacle position
 qO5 = [1.35;-1.5];      % 5th obstacle position
-r = [r1 r1 r1 r1 0.05];
+r = [r1 r1];
 Kp = 0.2 ;              % proportional term
 Kd = 1 ;                % derivative term 
 threshold_skip = 0;  % 0.05
-
-obs = [qO1, qO2, qO3, qO4, qO5];    % obstacles
+obs = [qO1, qO2];    % obstacles
 
 out = sim('DDICBF_MO');
 t = out.tout;
 q1 =  out.configuration_vector.Data(:,1);
 q2 =  out.configuration_vector.Data(:,2);
 figure("Name","Obstacle Avoidance through CBF")
-plot(q1,q2,'Color','k','LineWidth',3);
+plot(q1,q2,'Color','k','LineWidth',4);
+axis("equal");
 text(qstart(1)+0.1,qstart(2),'$\bf{q_{start}}$','Interpreter','latex','FontSize',20);
 text(qg(1),qg(2),'$\bf{q_{goal}}$','Interpreter','latex','FontSize',20);
 xlabel('position, $q_1$ (m)','Interpreter','latex');
@@ -49,7 +50,7 @@ for i = 1:num_obs
     xunit = r(i) * cos(th) + ob(1);
     yunit = r(i) * sin(th) + ob(2);
     col = rand(1,3);
-    h = plot(xunit, yunit,'color', 'k','LineWidth',0.1);
+    h = plot(xunit, yunit,'color', 'k','LineWidth',6);
     fill(xunit, yunit, col)
 end
 plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',15,'MarkerFaceColor','red'); hold on;
