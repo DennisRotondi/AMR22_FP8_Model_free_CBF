@@ -8,7 +8,7 @@
 clear 
 close all
 clc
-% set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
+set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 
 qstart =[0,0];          % starting configuration
 qdotstart =[0,0];       % starting initial velocity
@@ -19,16 +19,16 @@ qg =[4, -1];            % desired configuration
 alpha = 0.1;            % barrier certificate param 
 qO1 = [1.5;0];          % 1st obstacle position
 qO2 = [3;-1.5];         % 2nd obstacle position
-qO3 = [2;-1.5];         % 3rd obstacle position
+qO3 = [1.5;-1.5];       % 3rd obstacle position
 qO4 = [0.8;-1.8];       % 4th obstacle position
 qO5 = [1.35;-1.5];      % 5th obstacle position
-r = [r1 r1];
-Kp = 0.2 ;              % proportional term
-Kd = 1 ;                % derivative term 
-threshold_skip = 0;  % 0.05
-obs = [qO1, qO2];    % obstacles
+r = [r1 r1 0.5 0.05 0.05];
+Kp = 0.2;               % proportional term
+Kd = 1;                 % derivative term 
+threshold_skip = 0.0;   % 0.05
+obs = [qO1 qO2];        % obstacles
 
-out = sim('DDICBF_MO');
+out = sim('simulation_DIMFCBF');
 t = out.tout;
 q1 =  out.configuration_vector.Data(:,1);
 q2 =  out.configuration_vector.Data(:,2);
