@@ -1,38 +1,42 @@
-\section*{Background on Control Barrier Functions}
+\section{Background on Control Barrier Functions}
 \addcontentsline{toc}{section}{Background on Control Barrier Functions}
 Consider a generic nonlinear control-affine system, whose dynamical model is expressed as:
 \begin{equation}
-\dot{x}=f(x)+g(x)u
+\dot{\xv}=f(\xv)+g(\xv)\uv
 \label{system}
 \end{equation}
-where $x\in\mathcal{D}\subset \mathbb{R}^n$ is the state and $u\in U \subseteq \mathbb{R}^m$, the control input. Assume that the functions $f:\mathbb{R}^n\to\mathbb{R}^n$ and $g:\mathbb{R}^n\to\mathbb{R}^{n\times m} $ are assumed to be locally Lipschitz functions.\\
-\textbf{Definition 1}. Let $\mathcal{C}\subset \mathcal{D}\subseteq \mathbb{R}^n$ be the $0$-superlevel set of a continuously  differentiable function $h:\mathcal{D}\to\mathbb{R}$:
+where $\xv\in\mathcal{D}\subset \mathbb{R}^n$ is the state and $\uv\in U \subseteq \mathbb{R}^m$, the control input. Assume that the functions $f:\mathbb{R}^n\to\mathbb{R}^n$ and $g:\mathbb{R}^n\to\mathbb{R}^{n\times m} $ are assumed to be locally Lipschitz functions.
+\begin{definition} Let $\mathcal{C}\subset \mathcal{D}\subseteq \mathbb{R}^n$ be the $0$-superlevel set of a continuously  differentiable function $h:\mathcal{D}\to\mathbb{R}$:
 \begin{equation}
 \begin{aligned}
-\mathcal{C} =& \{x\in\mathbb{R}^n :& h(x)\geq 0\} \\
-\partial{\mathcal{C}} =& \{x\in\mathbb{R}^n :& h(x)= 0\} \\
-\mathrm{Int}({\mathcal{C}}) =& \{x\in\mathbb{R}^n :& h(x)> 0\} \\
+\mathcal{C} =& \{\xv\in\mathbb{R}^n :& h(\xv)\geq 0\} \\
+\partial{\mathcal{C}} =& \{\xv\in\mathbb{R}^n :& h(\xv)= 0\} \\
+\mathrm{Int}({\mathcal{C}}) =& \{\xv\in\mathbb{R}^n :& h(\xv)> 0\} \\
 \end{aligned}
 \end{equation}
-\textbf{Definition 2:} System (\ref{system}) is \textit{safe} w.r.t $\mathcal{C}$ if $\mathcal{C}$ is forward invariant under (\ref{system}), that is, $x_0\in\mathcal{C}\Rightarrow x(t)\in\mathcal{C}, \forall t\geq0$.
-Then, $h$ is a control barrier function (CBF) if $\frac{\partial{h}}{\partial x} (x)\neq 0$ for all $x\in \partial{\mathcal{C}}$ and there exists $\alpha \in \mathbb{R}_{>0}$ such that $\forall x \in \mathcal{C}$: 
+\end{definition}
+\begin{definition} System (\ref{system}) is \textit{safe} w.r.t $\mathcal{C}$ if $\mathcal{C}$ is forward invariant under (\ref{system}), that is, $\xv_0\in\mathcal{C}\Rightarrow \xv(t)\in\mathcal{C}, \forall t\geq0$.
+Then, $h$ is a control barrier function (CBF) if $\frac{\partial{h}}{\partial \xv} (\xv)\neq 0$ for all $\xv\in \partial{\mathcal{C}}$ and there exists $\alpha \in \mathbb{R}_{>0}$ such that $\forall \xv \in \mathcal{C}$: 
 \begin{equation}
-\sup_{u\in U} \underbrace{ 
+\sup_{\uv\in U} \underbrace{ 
 \begin{bmatrix}
-L_fh(x) + L_gh(x)u] 
-\end{bmatrix}}_{\dot{h}(x,u)}\geq -\alpha h(x)
+L_fh(\xv) + L_gh(\xv)\uv] 
+\end{bmatrix}}_{\dot{h}(\xv,\uv)}\geq -\alpha h(\xv)
 \end{equation}
-\textbf{Theorem 1:} If $h$ is a CBF for (1), then any locally Lipschitz continuous controller $u = k(x)$ satisfying : 
+\begin{theorem}
+    \label{theorem1}If $h$ is a CBF for (1), then any locally Lipschitz continuous controller $\uv = k(\xv)$ satisfying : 
 \begin{equation}
-\dot{h}(x,k(x))\geq \alpha h(x)
+\dot{h}(\xv,k(\xv))\geq \alpha h(\xv)
 \label{cond:2}
 \end{equation}
-$\forall{x}\in\mathcal{C}$ renders (\ref{system}) safe w.r.t $\mathcal{C}$. \\
-\textbf{Control synthesis:} Theorem $1$ establishes safety-critical controller synthesis by condition (\ref{cond:2}). Satisfying  (\ref{cond:2}) may require a complex analytic procedure. Moreover, the safety controller is generally not meant to operate by itself but rather to support s primary, possibly unsafe controller designed to achieve standard control objectives, like stability, regulation or tracking. A minimally invasive strategy to obtain this result it to set up an optimization-based control problem whose objectives is to minimize the difference between the desire, possibly unsafe controller $k_d(x)$ and the actuated one $u$, so as to satisfy the CBF constraint:
+$\forall{\xv}\in\mathcal{C}$ renders (\ref{system}) safe w.r.t $\mathcal{C}$. 
+\end{theorem}
+\end{definition}
+\textbf{Control synthesis:} Theorem  \ref{theorem1} establishes safety-critical controller synthesis by condition (\ref{cond:2}). Satisfying  (\ref{cond:2}) may require a complex analytic procedure. Moreover, the safety controller is generally not meant to operate by itself but rather to support s primary, possibly unsafe controller designed to achieve standard control objectives, like stability, regulation or tracking. A minimally invasive strategy to obtain this result it to set up an optimization-based control problem whose objectives is to minimize the difference between the desire, possibly unsafe controller $k_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
 \begin{equation}
 \begin{aligned}
-k(x)=\underset{u\in U}{\arg\min}  &(u-k_d(x))^T(u-k_d(x)) \\ 
-\mathrm{s.t}\,\, &\dot{h}(x,u)\geq -\alpha h(x)
+k(\xv)=\underset{\uv\in U}{\arg\min}  &(\uv-k_d(\xv))^T(\uv-k_d(\xv)) \\ 
+\mathrm{s.t}\,\, &\dot{h}(\xv,\uv)\geq -\alpha h(\xv)
 \end{aligned}
 \end{equation}
 The role of $\alpha$ is to provide to the designed a way to modulate the action of the CBF, depending on whether a more conservative or a more aggressive behavior is desired.
