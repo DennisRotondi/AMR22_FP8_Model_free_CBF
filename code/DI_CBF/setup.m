@@ -1,6 +1,6 @@
 % This file is going to extract the simulation
 % variables from simulink and to initializate 
-% the simulation of MODEL FREE CBF
+% the simulation of STANDARD CBF Method
 
 % Control Barrier Function, Progect FP8- 2022
 % Dennis Rotondi - Marco Montagna - Mirko Mizzoni
@@ -14,9 +14,9 @@ qstart =[0,0];          % starting configuration
 qdotstart =[0,0];       % starting initial velocity
 simTime = 150;          % simulation time
 r1 = 0.75;              % radius obstacle
-M = 10*eye(2);          % inertia matrix
+M = 1*eye(2);           % inertia matrix
 qg =[4, -1];            % desired configuration
-alpha = 0.1;            % barrier certificate param 
+alpha = 0.2;            % barrier certificate param 
 qO1 = [1.5;0];          % 1st obstacle position
 qO2 = [3;-1.5];         % 2nd obstacle position
 qO3 = [1.5;-1.5];       % 3rd obstacle position
@@ -27,8 +27,10 @@ Kp = 0.2;               % proportional term
 Kd = 1;                 % derivative term 
 threshold_skip = 0.0;   % 0.05
 obs = [qO1 qO2];        % obstacles
+mu = 1;
+delta = 0;
 
-out = sim('simulation_DIMFCBF');
+out = sim('simulation_DICBF');
 t = out.tout;
 q1 =  out.configuration_vector.Data(:,1);
 q2 =  out.configuration_vector.Data(:,2);
@@ -59,17 +61,17 @@ plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',15,'MarkerFaceColor',
 
 
 % import simData from simulink
-input_norm =  out.input_norm.Data;
-safe_velocity_norm =  out.safe_velocity_norm.Data;
+% input_norm =  out.input_norm.Data;
+safe_input_norm =  out.safe_input_norm.Data;
 velocity_norm = out.velocity_norm.Data;
-desired_velocity_norm = out.desired_velocity_norm.Data;
-cbf = out.cbf.Data;
-time = out.safe_velocity_norm.time;
+desired_input_norm = out.desired_input_norm.Data;
+% cbf = out.cbf.Data;
+time = out.safe_input_norm.time;
 
 % print velocity norms
 figure("Name","Obstacle Avoidance through CBF: Velocity")
-plot(time,safe_velocity_norm,time,velocity_norm,time,desired_velocity_norm,'LineWidth',4);
-legend('safe','actual','desired','Interpreter','latex','FontSize',30);
+plot(time,safe_input_norm,time,desired_input_norm,'LineWidth',4);
+legend('safe','desired','Interpreter','latex','FontSize',30);
 xlabel('time, $t$ (s)','Interpreter','latex');
 ylabel('velocity, $\| \dot{q} \|$ (m/s)','Interpreter','latex');
 fontname(gca,"Latin Modern Math")
@@ -77,28 +79,28 @@ xlim([0,simTime])
 grid on;
 fontsize(gca,30,'points');
 
-% import colors 
-NMatlabBlue     = [0        0.4470   0.7410];  
-NMatlabBordeaux = [0.6350   0.0780   0.1840]; 
-
-% print Input norm
-figure("Name","Obstacle Avoidance through CBF: Control effort")
-plot(out.input_norm.time,input_norm,'Color',NMatlabBordeaux,'LineWidth',4);
-legend("$\alpha$ = "+num2str(alpha),'Interpreter','latex','FontSize',30);
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('input, $ \| u \|$ (m/$s^2$)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,30,'points');
-
-% print CBF function
-figure("Name","Obstacle Avoidance through CBF: Control Barrier Function")
-plot(time,cbf(1,:),'Color',NMatlabBlue ,'LineWidth',4);
-yline(0,'LineWidth',4,'Color','red')
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('CBF, $h$ (m)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,30,'points');
+% % import colors 
+% NMatlabBlue     = [0        0.4470   0.7410];  
+% NMatlabBordeaux = [0.6350   0.0780   0.1840]; 
+% 
+% % print Input norm
+% figure("Name","Obstacle Avoidance through CBF: Control effort")
+% plot(out.input_norm.time,input_norm,'Color',NMatlabBordeaux,'LineWidth',4);
+% legend("$\alpha$ = "+num2str(alpha),'Interpreter','latex','FontSize',30);
+% xlabel('time, $t$ (s)','Interpreter','latex');
+% ylabel('input, $ \| u \|$ (m/$s^2$)','Interpreter','latex');
+% fontname(gca,"Latin Modern Math")
+% xlim([0,simTime])
+% grid on;
+% fontsize(gca,30,'points');
+% 
+% % print CBF function
+% figure("Name","Obstacle Avoidance through CBF: Control Barrier Function")
+% plot(time,cbf(1,:),'Color',NMatlabBlue ,'LineWidth',4);
+% yline(0,'LineWidth',4,'Color','red')
+% xlabel('time, $t$ (s)','Interpreter','latex');
+% ylabel('CBF, $h$ (m)','Interpreter','latex');
+% fontname(gca,"Latin Modern Math")
+% xlim([0,simTime])
+% grid on;
+% fontsize(gca,30,'points');
