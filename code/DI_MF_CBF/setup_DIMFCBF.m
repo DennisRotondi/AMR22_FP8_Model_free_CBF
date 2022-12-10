@@ -17,22 +17,22 @@ r1 = 0.75;              % radius obstacle
 M = 1*eye(2);           % inertia matrix
 qg =[4, -1];            % desired configuration
 alpha = 0.1;            % barrier certificate param 
-qO1 = [1.5;0];          % 1st obstacle position
-qO2 = [3;-1.5];         % 2nd obstacle position
-qO3 = [1.5;-1.5];       % 3rd obstacle position
-qO4 = [0.8;-1.8];       % 4th obstacle position
-qO5 = [1.35;-1.5];      % 5th obstacle position
-r = [r1 r1 0.5 0.05 0.05];
+qO1 = [1.5;0];              % 1st obstacle position
+qO2 = [1.5;-1.4];           % 2rd obstacle position
+qO3 = [3;-1.5];             % 3nd obstacle position
+qO4 = [3;-0.19];            % 4th obstacle position
+qO5 = [4;-0.4];             % 5th obstacle position
+r = [r1 0.45 r1 0.45 0.45];
 Kp = 0.2;               % proportional term
 Kd = 1;                 % derivative term 
 threshold_skip = 0.0;   % 0.05
-obs = [qO1 qO2];        % obstacles
+obs = [qO1 qO2 qO3 qO4 qO5];    % obstacles
 
 out = sim('simulation_DIMFCBF');
 t = out.tout;
 q1 =  out.configuration_vector.Data(:,1);
 q2 =  out.configuration_vector.Data(:,2);
-figure("Name","Obstacle Avoidance through CBF")
+figure("Name","MF: Obstacle Avoidance through CBF")
 plot(q1,q2,'Color','k','LineWidth',4);
 axis("equal");
 text(qstart(1)+0.1,qstart(2),'$\bf{q_{start}}$','Interpreter','latex','FontSize',20);
@@ -53,6 +53,7 @@ for i = 1:num_obs
     col = rand(1,3);
     h = plot(xunit, yunit,'color', 'k','LineWidth',6);
     fill(xunit, yunit, col)
+    text(ob(1),ob(2),"$O_"+ num2str(i) +"$",'Interpreter','latex','FontSize',40,'Color','white');
 end
 plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',15,'MarkerFaceColor','red'); hold on;
 plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',15,'MarkerFaceColor','green');
@@ -67,7 +68,7 @@ cbf = out.cbf.Data;
 time = out.safe_velocity_norm.time;
 
 % print velocity norms
-figure("Name","Obstacle Avoidance through CBF: Velocity")
+figure("Name","MF: Obstacle Avoidance through CBF: Velocity")
 plot(time,safe_velocity_norm,time,velocity_norm,time,desired_velocity_norm,'LineWidth',4);
 legend('safe','actual','desired','Interpreter','latex','FontSize',30);
 xlabel('time, $t$ (s)','Interpreter','latex');
@@ -82,7 +83,7 @@ NMatlabBlue     = [0        0.4470   0.7410];
 NMatlabBordeaux = [0.6350   0.0780   0.1840]; 
 
 % print Input norm
-figure("Name","Obstacle Avoidance through CBF: Control effort")
+figure("Name","MF: Obstacle Avoidance through CBF: Control effort")
 plot(out.input_norm.time,input_norm,'Color',NMatlabBordeaux,'LineWidth',4);
 legend("$\alpha$ = "+num2str(alpha),'Interpreter','latex','FontSize',30);
 xlabel('time, $t$ (s)','Interpreter','latex');
@@ -93,7 +94,7 @@ grid on;
 fontsize(gca,30,'points');
 
 % print CBF function
-figure("Name","Obstacle Avoidance through CBF: Control Barrier Function")
+figure("Name","MF: Obstacle Avoidance through CBF: Control Barrier Function")
 plot(time,cbf(1,:),'Color',NMatlabBlue ,'LineWidth',4);
 yline(0,'LineWidth',4,'Color','red')
 xlabel('time, $t$ (s)','Interpreter','latex');
