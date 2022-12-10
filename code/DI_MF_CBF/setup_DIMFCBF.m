@@ -12,9 +12,9 @@ set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 2
 
 qstart =[0,0];          % starting configuration
 qdotstart =[0,0];       % starting initial velocity
-simTime = 150;          % simulation time
+simTime = 250;          % simulation time
 r1 = 0.75;              % radius obstacle
-M = 10*eye(2);          % inertia matrix
+M = 1*eye(2);           % inertia matrix
 qg =[4, -1];            % desired configuration
 alpha = 0.1;            % barrier certificate param 
 qO1 = [1.5;0];          % 1st obstacle position
