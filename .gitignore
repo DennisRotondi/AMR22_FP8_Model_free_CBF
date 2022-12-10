@@ -1,5 +1,5 @@
 *.slxc
-*/slprj/*
+*slprj/*
 slprj/*
 *.DS_Store
 *.asv
