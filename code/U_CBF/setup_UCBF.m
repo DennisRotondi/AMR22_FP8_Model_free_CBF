@@ -11,28 +11,26 @@ clc
 set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 q0 = [0 0 0 0 0];       % start variables x0 y0 theta0 v0 w0
 qstart = [q0(1) ; q0(2)]; % initial cartesian position
-
+% reference values
+x1d = 4; % xdes reference
+y1d = -1; % ydes reference 
+qg=[x1d ;y1d];
 % system parameters
-m = 1;     % mass
-Icm = 0.5; % inertia
+m = 0.8;     % mass
+Icm = 0.6; % inertia
 a = 0.4;
 params=[m,Icm,a];
 
 % nominal controller gains
 kp = 0.3;   % proportional
-kd = 0.2;   % derivative
+kd = 1;   % derivative
 ContGainVec=[kp kd];
-
-% reference values
-x1d = 4; % xdes reference
-y1d = -1; % ydes reference 
-qg=[x1d ;y1d];
 
 % simulation parameters
 simTime = 150;               % time of simulation
 % barrier parameters
-alpha = 0.2;                % barrier certificate param 
-mu = 0.03;
+alpha = 1;                % barrier certificate param 
+mu = 0.3;
 % obstaicle parameters
 r1 = 0.75;                      % radius obstacle
 qO1 = [1.7;0];                  % 1st obstacle position
@@ -42,7 +40,7 @@ qO4 = [3;-0.19];                % 4th obstacle position
 qO5 = [4;-0.4];                 % 5th obstacle position
 r = [r1 0.45 r1 0.45 0.45];     % radius vector
 threshold_skip = 0;             % 0.05
-obs = [qO1 qO2 qO3];    % obstacles
+obs = [qO1 qO2 qO3 qO4 qO5];    % obstacles
 conditional_delta = [0.05 0.01 0.05 0.05 0.05];
 
 % Start simulation
@@ -110,14 +108,15 @@ fontname(gca,"Latin Modern Math")
 xlim([0,simTime])
 grid on;
 fontsize(gca,30,'points');
-
-% % print CBF function
-% figure("Name","Obstacle Avoidance through CBF: Control Barrier Function")
-% plot(time,cbf(1,:),'Color',NMatlabBlue ,'LineWidth',4);
-% yline(0,'LineWidth',4,'Color','red')
-% xlabel('time, $t$ (s)','Interpreter','latex');
-% ylabel('CBF, $h$ (m)','Interpreter','latex');
-% fontname(gca,"Latin Modern Math")
-% xlim([0,simTime])
-% grid on;
-% fontsize(gca,30,'points');
+cbf = out.cbf.Data;
+NMatlabBlue     = [0        0.4470   0.7410]; 
+% print CBF function
+figure("Name","Obstacle Avoidance through CBF: Control Barrier Function")
+plot(time,cbf(1,:),'Color',NMatlabBlue ,'LineWidth',4);
+yline(0,'LineWidth',4,'Color','red')
+xlabel('time, $t$ (s)','Interpreter','latex');
+ylabel('CBF, $h$ (m)','Interpreter','latex');
+fontname(gca,"Latin Modern Math")
+xlim([0,simTime])
+grid on;
+fontsize(gca,30,'points');
