@@ -5,51 +5,52 @@
 % Control Barrier Function, Progect FP8- 2022
 % Dennis Rotondi - Marco Montagna - Mirko Mizzoni
 
-close all
 clear 
+close all
 clc
-q0 = [0 0.5 1 0 0];       % start variables x0 y0 theta0 v0 w0
+set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
+q0 = [0 0 0 0 0];       % start variables x0 y0 theta0 v0 w0
 qstart = [q0(1) ; q0(2)]; % initial cartesian position
 
 % system parameters
-m = 10;     % mass
-Icm = 0.02; % inertia
-a = 0.1;
+m = 1;     % mass
+Icm = 0.5; % inertia
+a = 0.4;
 params=[m,Icm,a];
 
 % nominal controller gains
-kp = 1;   % proportional
-kd = 1;   % derivative
+kp = 0.3;   % proportional
+kd = 0.2;   % derivative
 ContGainVec=[kp kd];
 
 % reference values
-x1d = 1; % xdes reference
-y1d = 1; % ydes reference 
+x1d = 4; % xdes reference
+y1d = -1; % ydes reference 
 qg=[x1d ;y1d];
 
 % simulation parameters
-simTime = 30;               % time of simulation
+simTime = 150;               % time of simulation
 % barrier parameters
-alpha = 0.1;                % barrier certificate param 
-mu = 0.2;
+alpha = 0.2;                % barrier certificate param 
+mu = 0.03;
 % obstaicle parameters
 r1 = 0.75;                      % radius obstacle
-qO1 = [1.5;0];                  % 1st obstacle position
+qO1 = [1.7;0];                  % 1st obstacle position
 qO2 = [1.5;-1.4];               % 2rd obstacle position
 qO3 = [3;-1.5];                 % 3nd obstacle position
 qO4 = [3;-0.19];                % 4th obstacle position
 qO5 = [4;-0.4];                 % 5th obstacle position
 r = [r1 0.45 r1 0.45 0.45];     % radius vector
 threshold_skip = 0;             % 0.05
-obs = [qO1 qO2 qO3 qO4 qO5];    % obstacles
-conditional_delta = [0.1 0.1 0.05 0.05 0.05];
+obs = [qO1 qO2 qO3];    % obstacles
+conditional_delta = [0.05 0.01 0.05 0.05 0.05];
 
 % Start simulation
-out = sim('simulation_unicycleModel');
-q1 =  out.configuration_vector.Data(:,1); % x(t)
-q2 =  out.configuration_vector.Data(:,2); % y(t)
+out = sim('simulation_UCBF');
+q1 =  out.configuration_vector.Data(1,:); % x(t)
+q2 =  out.configuration_vector.Data(2,:); % y(t)
 nom_input_norm =  out.u_nominal.Data;     % ||u(t)||
-time = out.tout;                          % t 
+time = out.configuration_vector.Time;                          % t 
 
 
 % In the configuration space
@@ -83,7 +84,9 @@ for i = 1:num_obs
         h = plot(xunit_clearance, yunit_clearance, '--','LineWidth',3);
     end
 end
-
+plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',15,'MarkerFaceColor','red'); hold on;
+plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',20,'MarkerFaceColor','green');
+plot(q1(end),q2(end),'marker','o','Color','blue','MarkerSize',15,'MarkerFaceColor','blue'); hold on;
 
 % Plot Configuration Evolution
 figure("Name","Obstacle Avoidance through CBF: Position Evolution")
