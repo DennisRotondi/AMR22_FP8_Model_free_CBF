@@ -23,7 +23,7 @@ animation_mode = 1;
                    
 
 % simulation parameters
-simTime = 150;               % time of simulation
+simTime = 28;               % time of simulation
 
 % reference values
 x1d = 4;                     % xdes reference
@@ -43,7 +43,7 @@ ContGainVec=[kp kd];         % gain vector
 
 % barrier parameters
 alpha = 0.8;                 % barrier certificate param 
-mu = 1;                    % parameter of the CBF
+mu = 0.1;                    % parameter of the CBF
 
 % obstacle parameters
 r1 = 1;                      % radius obstacle
@@ -100,18 +100,20 @@ fontsize(gca,35,'points');
 % Roomba Settings for Plotting
 xunit = RadiusRobot * cos(th) + q1(1)-a*cos(theta(1));
 yunit = RadiusRobot * sin(th) + q2(1)-a*sin(theta(1));
+cbf = out.cbf.Data;
+
 plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',18,'MarkerFaceColor','red'); 
 plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',18,'MarkerFaceColor','green');
 plot(q1(end),q2(end),'marker','o','Color','blue','MarkerSize',18,'MarkerFaceColor','blue'); 
 if animation_mode==1
     col_roomba = [1; 0.5; 0; 0.75];
-    m=plot(q1(i),q2(i),'marker','o','Color','green','MarkerSize',3,'MarkerFaceColor','green');
+    mo=plot(q1(i),q2(i),'marker','o','Color','green','MarkerSize',3,'MarkerFaceColor','green');
     f = fill(xunit,yunit,[0.16,0.62,0.57],'FaceAlpha',0.4);
     f.LineWidth = 3;
     f.EdgeColor = [0.5 0.2 0.55];
     for i=1:length(time)
         delete(f);
-        delete(m);
+        delete(mo);
         q=[q1(i);q2(i)];
         if norm(q-qg)<1e-1
             break % tolerance setting
@@ -121,12 +123,12 @@ if animation_mode==1
         f = fill(xunit,yunit,[0.16,0.62,0.57],'FaceAlpha',0.9);
         f.LineWidth = 3;
         f.EdgeColor = [0.1882 0.1882 0.1882];
-        m = plot(q1(i),q2(i),'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
+        mo = plot(q1(i),q2(i),'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
         drawnow;
         title("time:"+num2str(time(i)));
-%         if (abs(time(i)-20) < 1e-2)
-%             pause;
-%         end
+        if (cbf(i) < 0)
+            pause;
+        end
     end
 end
 hold off;
