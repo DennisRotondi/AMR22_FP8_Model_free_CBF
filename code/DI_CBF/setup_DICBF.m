@@ -30,10 +30,10 @@ MAP = "map_2";
 obstacles = setup_environment(MAP);
 %% control parameters
 qg =[4, -1];                % desired configuration
-alpha = 0.1;                % barrier certificate param 
-Kp = 0.2;                   % proportional term
-Kd = 1;                     % derivative term 
-mu = 0.02;                  % cbf velocity weight
+alpha = 0.2;                % barrier certificate param 
+Kp = 0.3;                   % proportional term
+Kd = 2;                     % derivative term 
+mu = 1;                     % cbf velocity weight
 threshold_skip = 0;         % hysteresis mechanism
 %% run simulation
 out = sim('simulation_DICBF');
@@ -42,6 +42,8 @@ time = out.cbf.Time;
 q1 = out.configuration_vector.Data(:,1);
 q2 = out.configuration_vector.Data(:,2);
 cbf = out.cbf.Data;
+% the term to guarantee relative degree = 1
+second_part_cbf = out.second_part_cbf.Data(1,:);
 % actual velocity of the robot
 velocity_norm = out.actual_velocity_norm.Data;
 % desired input produced from the nominal controller
@@ -53,68 +55,10 @@ safe_input_norm =  out.safe_u_norm.Data;
 fig1 = plot_map(obstacles);
 plot_trajectory(q1,q2,qstart,qg);
 fig2 = plot_cbf(cbf,time);
-fig3 = plot_evolution(time,q1,q2,qg,simTime);
-% 
-% figure("Name","Obstacle Avoidance through CBF")
-
-% axis("equal");
-
-
-
-% [~,num_obs] = size(obs);
-% 
-
-% 
-% 
-
-% 
-% 
-% % import simData from simulink
-% safe_input_norm =  out.safe_u_norm.Data;
-% velocity_norm = out.velocity_norm.Data;
-% desired_input_norm = out.desired_input_norm.Data;
-% cbf = out.cbf.Data;
-% time = out.safe_u_norm.time;
-% 
-% 
-% % print position 
-% figure("Name","Obstacle Avoidance through CBF: Position Evolution")
-% plot(time,q1,time,q2,'LineWidth',4);
-% yline(qg(1),'-.','LineWidth',4)
-% yline(qg(2),'-.','LineWidth',4)
-% legend('$q_1(t)$','$q_2(t)$','Interpreter','latex','FontSize',30);
-% xlabel('time, $t$ (s)','Interpreter','latex');
-% ylabel('position, $q(t)$ (m)','Interpreter','latex');
-% fontname(gca,"Latin Modern Math")
-% xlim([0,simTime])
-% grid on;
-% fontsize(gca,30,'points');
-% 
-% 
-% 
-% 
-% % print torques norms
-% figure("Name","Obstacle Avoidance through CBF: Velocity")
-% plot(time,safe_input_norm,time,desired_input_norm,'LineWidth',4);
-% legend('safe','desired','Interpreter','latex','FontSize',30);
-% xlabel('time, $t$ (s)','Interpreter','latex');
-% ylabel('torque, $\| \tau \|$ (N$\cdot$ m)','Interpreter','latex');
-% fontname(gca,"Latin Modern Math")
-% xlim([0,simTime])
-% grid on;
-% fontsize(gca,30,'points');
-% 
-% % import colors
-% 
-% NMatlabBordeaux = [0.6350   0.0780   0.1840];
-% 
-% % print safe Input norm
-% figure("Name","Obstacle Avoidance through CBF: Control effort")
-% plot(time,safe_input_norm,'Color',NMatlabBordeaux,'LineWidth',4);
-% legend("$\alpha$ = "+num2str(alpha),'Interpreter','latex','FontSize',30);
-% xlabel('time, $t$ (s)','Interpreter','latex');
-% ylabel('input, $ \| u \|$ (m/$s^2$)','Interpreter','latex');
-% fontname(gca,"Latin Modern Math")
-% xlim([0,simTime])
-% grid on;
-% fontsize(gca,30,'points');
+fig3 = plot_evolution(q1,q2,qg,time);
+signals = {desired_input_norm, safe_input_norm};
+name = "Torque signals";
+sig_names = ["desired","safe"];
+dimension = 'torque, $\| \tau \|$ (N$\cdot$ m)';
+fig4 = plot_comparison(signals, name, time, dimension, sig_names);
+fig5 = plot_comparison({second_part_cbf}, "cbf second part", time, 'meters', "$\mu(q-q_O)^T\cdot\dot{q}$");
