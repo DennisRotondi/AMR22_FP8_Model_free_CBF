@@ -8,7 +8,7 @@ function fig = plot_cbf(cbf,time)
     ylabel('CBF, $h$ (m)','Interpreter','latex');
     xlim([0,time(end)])
     grid on;
-    set(gca,'FontSize',30);
+    set(gca,'FontSize',35);
     set(gca,'FontName',"Latin Modern Math");
 end
 

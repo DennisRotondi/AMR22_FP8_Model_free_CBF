@@ -21,7 +21,7 @@ function fig = plot_map(obstacles)
             plot(xunit_clearance, yunit_clearance, '--','LineWidth',3, 'Color', col);
         end
     end
-    set(gca,'FontSize',30);
+    set(gca,'FontSize',35);
     set(gca,'FontName',"Latin Modern Math");
 end
 
