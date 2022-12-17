@@ -44,10 +44,11 @@ q2 = out.configuration_vector.Data(:,2);
 cbf = out.cbf.Data;
 % actual velocity of the robot
 velocity_norm = out.actual_velocity_norm.Data;
-% desired velocity produced from the nominal controller
-desired_input_norm = out.desired_velocity_norm.Data;
-% input after safe optimization
+% desired input produced from the nominal controller
+desired_input_norm = out.desired_input_norm.Data;
+% input after safe optimization (actual input)
 safe_input_norm =  out.safe_u_norm.Data;
+
 %% plots
 fig1 = plot_map(obstacles);
 plot_trajectory(q1,q2,qstart,qg);
