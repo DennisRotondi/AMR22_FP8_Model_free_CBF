@@ -53,6 +53,7 @@ safe_input_norm =  out.safe_u_norm.Data;
 fig1 = plot_map(obstacles);
 plot_trajectory(q1,q2,qstart,qg);
 fig2 = plot_cbf(cbf,time);
+fig3 = plot_evolution(time,q1,q2,qg,simTime);
 % 
 % figure("Name","Obstacle Avoidance through CBF")
 
