@@ -11,7 +11,7 @@ clear
 close all
 clc
 set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
-q0 = [0 0 0 0 0];         % start variables x0 y0 theta0 v0 w0
+q0 = [-1 0 0 0 0];         % start variables x0 y0 theta0 v0 w0
 qstart = [q0(1) ; q0(2)]; % initial cartesian position
 RadiusRobot = 0.3;
 
@@ -19,11 +19,11 @@ RadiusRobot = 0.3;
 
 % 1 for watching the robot movie
 % 0 else
-animation_mode =0; 
+animation_mode = 1; 
                    
 
 % simulation parameters
-simTime = 50;               % time of simulation
+simTime = 150;               % time of simulation
 
 % reference values
 x1d = 4;                     % xdes reference
@@ -37,17 +37,17 @@ a = 0.20;                    % distance from the center
 params=[m,Icm,a];            % vector of parameters
 
 % nominal controller gains
-kp = 0.3;                    % proportional
+kp = 0.6;                    % proportional
 kd = 1;                      % derivative
 ContGainVec=[kp kd];         % gain vector
 
 % barrier parameters
-alpha = 0.1;                 % barrier certificate param 
-mu = 0.3;                    % parameter of the CBF
+alpha = 0.8;                 % barrier certificate param 
+mu = 1;                    % parameter of the CBF
 
 % obstacle parameters
 r1 = 1;                      % radius obstacle
-qO1 = [1.8;1];               % 1st obstacle position
+qO1 = [1.8;0.7];               % 1st obstacle position
 qO2 = [3;-3];                % 2nd obstacle position
 qO3 = [4.6;-3];              % 3rd obstacle position
 qO4 = [5;0.5];               % 4th obstacle position
@@ -55,7 +55,7 @@ qO5 = [4;0];                 % 5th obstacle position
 r = [r1 1.4 r1 0.45 0.45];   % radius vector
 threshold_skip = 0;          % 0.05
 obs = [qO1 qO2 qO4];         % obstacle vector
-clearance = RadiusRobot+a;   % clearance
+clearance = RadiusRobot+a+0.1;   % clearance
 
 % Start simulation - - - - -  - - - - - - - - - - - -
 out = sim('simulation_UCBF');             % from sim
@@ -63,7 +63,7 @@ q1 =  out.configuration_vector.Data(1,:); % x(t)
 q2 =  out.configuration_vector.Data(2,:); % y(t)
 theta =  out.theta.Data;                  % y(t)
 nom_input_norm =  out.u_nominal.Data;     % ||u(t)||
-time = out.configuration_vector.Time;     % time                        % t 
+time = out.configuration_vector.Time;     % time t 
 
 % Plot trajectory of point A          
 figure("Name","Obstacle Avoidance through CBF")
@@ -83,8 +83,8 @@ for i = 1:num_obs
     plot(xunit, yunit,'color', 'k','LineWidth',9);
     fill(xunit, yunit, col);
     text(ob(1),ob(2),"$O_"+ num2str(i) +"$",'Interpreter','latex','FontSize',40,'Color','white');
-    xunit_clearance = (r(i)+clearance) * cos(th) + ob(1);
-    yunit_clearance = (r(i)+clearance) * sin(th) + ob(2);
+    xunit_clearance = (r(i)+0.1+a) * cos(th) + ob(1);
+    yunit_clearance = (r(i)+0.1+a) * sin(th) + ob(2);
     plot(xunit_clearance, yunit_clearance,'Color',col,'LineStyle','--','LineWidth',4);
     
 end
@@ -122,7 +122,11 @@ if animation_mode==1
         f.LineWidth = 3;
         f.EdgeColor = [0.1882 0.1882 0.1882];
         m = plot(q1(i),q2(i),'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
-        pause(0.000000001);
+        drawnow;
+        title("time:"+num2str(time(i)));
+%         if (abs(time(i)-20) < 1e-2)
+%             pause;
+%         end
     end
 end
 hold off;
