@@ -42,8 +42,8 @@ kd = 1;                      % derivative
 ContGainVec=[kp kd];         % gain vector
 
 % barrier parameters
-alpha = 0.8;                 % barrier certificate param 
-mu = 0.1;                    % parameter of the CBF
+alpha = 1;                 % barrier certificate param 
+mu = 0.8;%0.1;                    % parameter of the CBF
 
 % obstacle parameters
 r1 = 1;                      % radius obstacle
@@ -64,7 +64,8 @@ q2 =  out.configuration_vector.Data(2,:); % y(t)
 theta =  out.theta.Data;                  % y(t)
 nom_input_norm =  out.u_nominal.Data;     % ||u(t)||
 time = out.configuration_vector.Time;     % time t 
-
+cbf = out.cbf.Data;
+obstacle_index = out.obstacle_index.Data;
 % Plot trajectory of point A          
 figure("Name","Obstacle Avoidance through CBF")
 plot(q1,q2,'Color','#102542','LineWidth',4,'LineStyle','-.');
@@ -100,7 +101,7 @@ fontsize(gca,35,'points');
 % Roomba Settings for Plotting
 xunit = RadiusRobot * cos(th) + q1(1)-a*cos(theta(1));
 yunit = RadiusRobot * sin(th) + q2(1)-a*sin(theta(1));
-cbf = out.cbf.Data;
+
 
 plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',18,'MarkerFaceColor','red'); 
 plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',18,'MarkerFaceColor','green');
@@ -125,9 +126,14 @@ if animation_mode==1
         f.EdgeColor = [0.1882 0.1882 0.1882];
         mo = plot(q1(i),q2(i),'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
         drawnow;
-        title("time:"+num2str(time(i)));
+        title("time:"+num2str(time(i)));  
+        index = obstacle_index(i);
+        ob = obs(:,index);
+        xunit = r(index) * cos(th) + ob(1);
+        yunit = r(index) * sin(th) + ob(2);
+        col = rand(1,3);
         if (cbf(i) < 0)
-            pause;
+           plot(xunit, yunit,'color', 'r','LineWidth',9);
         end
     end
 end
