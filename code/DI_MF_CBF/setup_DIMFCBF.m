@@ -10,96 +10,49 @@ close all
 clc
 set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 
-qstart =[0,0];          % starting configuration
-qdotstart =[0,0];       % starting initial velocity
-simTime = 250;          % simulation time
-r1 = 0.75;              % radius obstacle
-M = 1*eye(2);           % inertia matrix
-qg =[4, -1];            % desired configuration
-alpha = 0.1;            % barrier certificate param 
-qO1 = [1.5;0];              % 1st obstacle position
-qO2 = [1.5;-1.4];           % 2rd obstacle position
-qO3 = [3;-1.5];             % 3nd obstacle position
-qO4 = [3;-0.19];            % 4th obstacle position
-qO5 = [4;-0.4];             % 5th obstacle position
-r = [r1 0.45 r1 0.45 0.45];
-Kp = 0.2;               % proportional term
-Kd = 1;                 % derivative term 
-threshold_skip = 0.0;   % 0.05
-obs = [qO1 qO2 qO3 qO4 qO5];    % obstacles
-
+%% robot initialization
+% these are the robot parameters that remain fixed during the experiments
+qstart =[0,0];              % starting configuration
+qdotstart =[0,0];           % starting initial velocity
+M = 1*eye(2);               % true inertia matrix
+robot_radius = 0;           % radius of the robot 
+a = 0;                      % displacement wrt robot center
+%% simulation stuff
+simTime = 50;              % simulation time
+M2 = 1*eye(2);              % estimated inertia matrix ( may be different from original)
+MAP = "map_2";
+% the function creates an 4xn matrix where n is the numer of the obstacles,
+% the first two rows are the center, then radious and clearance
+obstacles = setup_environment(MAP);
+%% control parameters
+qg =[4, -1];                % desired configuration
+alpha = 0.2;                % barrier certificate param 
+Kp = 0.2;                   % proportional term
+Kd = 1;                     % derivative term 
+threshold_skip = 0;         % hysteresis mechanism
+%% run simulation
 out = sim('simulation_DIMFCBF');
-t = out.tout;
+% import simData from simulink
+time = out.cbf.Time;
 q1 =  out.configuration_vector.Data(:,1);
 q2 =  out.configuration_vector.Data(:,2);
-figure("Name","MF: Obstacle Avoidance through CBF")
-plot(q1,q2,'Color','k','LineWidth',4);
-axis("equal");
-text(qstart(1)+0.1,qstart(2),'$\bf{q_{start}}$','Interpreter','latex','FontSize',20);
-text(qg(1),qg(2),'$\bf{q_{goal}}$','Interpreter','latex','FontSize',20);
-xlabel('position, $q_1$ (m)','Interpreter','latex');
-ylabel('position, $q_2$ (m)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-fontsize(gca,30,'points');
-[~,num_obs] = size(obs);
-
-% plot obstacles 
-for i = 1:num_obs
-    ob = obs(:,i);
-    hold on;
-    th = 0:pi/50:2*pi;
-    xunit = r(i) * cos(th) + ob(1);
-    yunit = r(i) * sin(th) + ob(2);
-    col = rand(1,3);
-    h = plot(xunit, yunit,'color', 'k','LineWidth',6);
-    fill(xunit, yunit, col)
-    text(ob(1),ob(2),"$O_"+ num2str(i) +"$",'Interpreter','latex','FontSize',40,'Color','white');
-end
-plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',15,'MarkerFaceColor','red'); hold on;
-plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',15,'MarkerFaceColor','green');
-
-
-% import simData from simulink
 input_norm =  out.input_norm.Data;
 safe_velocity_norm =  out.safe_velocity_norm.Data;
 velocity_norm = out.velocity_norm.Data;
 desired_velocity_norm = out.desired_velocity_norm.Data;
 cbf = out.cbf.Data;
-time = out.safe_velocity_norm.time;
 
-% print velocity norms
-figure("Name","MF: Obstacle Avoidance through CBF: Velocity")
-plot(time,safe_velocity_norm,time,velocity_norm,time,desired_velocity_norm,'LineWidth',4);
-legend('safe','actual','desired','Interpreter','latex','FontSize',30);
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('velocity, $\| \dot{q} \|$ (m/s)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,30,'points');
-
-% import colors 
-NMatlabBlue     = [0        0.4470   0.7410];  
-NMatlabBordeaux = [0.6350   0.0780   0.1840]; 
-
-% print Input norm
-figure("Name","MF: Obstacle Avoidance through CBF: Control effort")
-plot(out.input_norm.time,input_norm,'Color',NMatlabBordeaux,'LineWidth',4);
-legend("$\alpha$ = "+num2str(alpha),'Interpreter','latex','FontSize',30);
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('input, $ \| u \|$ (m/$s^2$)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,30,'points');
-
-% print CBF function
-figure("Name","MF: Obstacle Avoidance through CBF: Control Barrier Function")
-plot(time,cbf(1,:),'Color',NMatlabBlue ,'LineWidth',4);
-yline(0,'LineWidth',4,'Color','red')
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('CBF, $h$ (m)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,30,'points');
+%% plots
+fig1 = plot_map(obstacles);
+plot_trajectory(q1,q2,qstart,qg);
+fig2 = plot_cbf(cbf,time);
+fig3 = plot_evolution(q1,q2,qg,time);
+signals = {safe_velocity_norm, velocity_norm, desired_velocity_norm};
+name = "Velocity ";
+sig_names = ["safe","actual","desired"];
+dimension = 'velocity, $\| \dot{q} \|$ (m/s)';
+fig4 = plot_comparison(signals, name, time, dimension, sig_names);
+name = "Control effort";
+sig_names ="$ \alpha $ = "+num2str(alpha);
+dimension = 'input, $ \| u \|$ (m/$s^2$)';
+fig5 = plot_comparison({input_norm}, name, time, dimension, sig_names);
