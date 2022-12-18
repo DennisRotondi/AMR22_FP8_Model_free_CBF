@@ -19,7 +19,7 @@ RadiusRobot = 0.3;
 
 % 1 for watching the robot movie
 % 0 else
-animation_mode = 1; 
+animation_mode = 0; 
                    
 
 % simulation parameters
@@ -43,7 +43,7 @@ ContGainVec=[kp kd];         % gain vector
 
 % barrier parameters
 alpha = 1;                 % barrier certificate param 
-mu = 0.8;%0.1;                    % parameter of the CBF
+mu = 0.8 ; % 0.1;                    % parameter of the CBF
 
 % obstacle parameters
 r1 = 1;                      % radius obstacle
@@ -87,7 +87,6 @@ for i = 1:num_obs
     xunit_clearance = (r(i)+0.1+a) * cos(th) + ob(1);
     yunit_clearance = (r(i)+0.1+a) * sin(th) + ob(2);
     plot(xunit_clearance, yunit_clearance,'Color',col,'LineStyle','--','LineWidth',4);
-    
 end
 
 % Plotting the qstart and qgoal
@@ -139,38 +138,7 @@ if animation_mode==1
 end
 hold off;
 
-% Plot Configuration Evolution
-figure("Name","Obstacle Avoidance through CBF: Position Evolution")
-h =plot(time,q1,'r',time,q2,'b','LineWidth',4);
-yline(qg(1),'-.','LineWidth',4)
-yline(qg(2),'-.','LineWidth',4)
-legend('$q_1(t)$','$q_2(t)$','Interpreter','latex','FontSize',30);
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('position, $q(t)$ (m)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,35,'points');
-
-% Plot Nominal Acceleration
-figure("Name","Obstacle Avoidance through CBF: Velocity")
-plot(time,nom_input_norm,'Color','#102542','LineWidth',4);
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('torque, $\| \tau \|$ (N$\cdot$ m)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,35,'points');
-cbf = out.cbf.Data;
-NMatlabBlue     = [0        0.4470   0.7410]; 
-
-% print CBF function
-figure("Name","Obstacle Avoidance through CBF: Control Barrier Function")
-plot(time,cbf(1,:),'Color','#102542' ,'LineWidth',5);
-yline(0,'LineWidth',4,'Color','red')
-xlabel('time, $t$ (s)','Interpreter','latex');
-ylabel('CBF, $h$ (m)','Interpreter','latex');
-fontname(gca,"Latin Modern Math")
-xlim([0,simTime])
-grid on;
-fontsize(gca,35,'points');
+fig4 = plot_evolution(q1,q2,qg,time);
+signals = nom_input_norm;
+fig5 = plot_comparison({signals}, "Torque", time, 'torque, $\| \tau \|$ (N$\cdot$m)', "");
+fig6 = plot_cbf(cbf,time);
