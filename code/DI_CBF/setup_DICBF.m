@@ -5,35 +5,28 @@
 % variables from simulink and to initializate 
 % the simulation of STANDARD CBF Method on DI
 
-% Variable of interest - - - - - - 
-%  --- safe input (torque) 
-%  --- configuration (px,py)
-%  --- cbf hbar
-
-clear 
-close all
-clc
+clear; close all; clc;
 set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 %% robot initialization
 % these are the robot parameters that remain fixed during the experiments
-qstart =[0,0];              % starting configuration
-qdotstart =[0,0];           % starting initial velocity
+qstart = [0 ; 0];           % starting position
+qdotstart = [0 ; 0];        % starting velocity
 M = 1*eye(2);               % true inertia matrix
 robot_radius = 0;           % radius of the robot 
 a = 0;                      % displacement wrt robot center
 %% simulation stuff
-simTime = 50;              % simulation time
+simTime = 50;               % simulation time
 M2 = 1*eye(2);              % estimated inertia matrix ( may be different from original)
 MAP = "map_2";
 % the function creates an 4xn matrix where n is the numer of the obstacles,
 % the first two rows are the center, then radious and clearance
 obstacles = setup_environment(MAP);
 %% control parameters
-qg =[4, -1];                % desired configuration
+qg = [4, -1];                % desired position
 alpha = 0.2;                % barrier certificate param 
-Kp = 0.3;                   % proportional term
-Kd = 2;                     % derivative term 
-mu = 1;                     % cbf velocity weight
+Kp = 0.2;                   % proportional term
+Kd = 1;                     % derivative term 
+mu = 0.8;                   % cbf velocity weight
 threshold_skip = 0;         % hysteresis mechanism
 %% run simulation
 out = sim('simulation_DICBF');
@@ -50,7 +43,6 @@ velocity_norm = out.actual_velocity_norm.Data;
 desired_input_norm = out.desired_input_norm.Data;
 % input after safe optimization (actual input)
 safe_input_norm =  out.safe_u_norm.Data;
-
 %% plots
 fig1 = plot_map(obstacles);
 plot_trajectory(q1,q2,qstart,qg);
