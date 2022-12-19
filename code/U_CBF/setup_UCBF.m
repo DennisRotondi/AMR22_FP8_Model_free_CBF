@@ -13,7 +13,7 @@ vwstart = [0 0]';          % starting velocities (w0,v0)
 m = 1;                     % mass
 Icm = 0.6;                 % inertia
 a = 0.20;                  % distance from the center 
-params=[m,Icm,a];          % vector of parameters
+params = [m,Icm,a];        % vector of parameters
 robot_radius = 0.3;
 %% simulation stuff
 % 1 for watching the robot movie
@@ -56,3 +56,6 @@ sig_names = ["desired","safe"];
 dimension = 'torque, $\| \tau \|$ (N$\cdot$ m)';
 fig4 = plot_comparison(signals, name, time, dimension, sig_names);
 fig5 = plot_comparison({second_part_cbf}, "cbf second part", time, 'meters', "$\mu(q-q_O)^T\cdot\dot{q}$");
+
+
+% dist con vel, cbf as distance measure; naive; multiple cbf 

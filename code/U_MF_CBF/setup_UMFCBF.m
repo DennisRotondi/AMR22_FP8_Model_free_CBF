@@ -8,10 +8,10 @@
 clear; close all; clc;
 set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 %% robot initialization
-qstart = [-2 0 0]';        % starting pose (x0 y0 theta0)
+qstart = [-2 0.1 0]';      % starting pose (x0 y0 theta0)
 vwstart = [0 0]';          % starting velocities (w0,v0)
-m = 0.3;                   % mass
-Icm = 0.2;                 % inertia
+m = 0.2;                   % mass
+Icm = 1e-2;                % inertia
 a = 0.80;                  % distance from the center 
 params=[m,Icm,a];          % vector of parameters
 robot_radius = 0.3;
@@ -20,12 +20,12 @@ robot_radius = 0.3;
 % 0 else
 animation_mode = 0;                  
 simTime = 150;              % time of simulation
-MAP = "map_4";
+MAP = "map_2";
 obstacles = setup_environment(MAP,a,robot_radius);
 %% control parameters
-qg=[6 ;-6];                % qgoal
-Kp = 0.7;                  % proportional
-Kd = 3;                    % derivative
+qg=[6 ; 0];                % qgoal
+Kp = 6;                  % proportional
+Kd = 6;                    % derivative
 alpha = 0.1;                 % barrier certificate param 
 threshold_skip = 0;        % 0.05
 %% run simulation
