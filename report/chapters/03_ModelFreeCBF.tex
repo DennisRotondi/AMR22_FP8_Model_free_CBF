@@ -1,0 +1,39 @@
+\section{Model Free Control Barrier Functions}
+The work in \cite{mf_cbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, then this velocity is tracked by a velocity tracking controller. Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
+Consider now a robotic system with configuration space $Q \subseteq \mathbb{R}^n$, configuration coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics:
+\begin{equation} \label{eq:dynamic model}
+    M(\qv)\ddot{\qv}+C(\dot{\qv},\qv)\dot{\qv}+G(\qv)=B\uv,
+\end{equation}
+where $M(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $C(\dot{\qv},\qv)\in\mathbb{R}^{n \times n}$ models centrifugal and Coriolis forces, $G(\qv)\in\mathbb{R}^{n}$ is the gravity term and $B\in\mathbb{R}^{n \times m}$ is the input matrix.
+
+We consider control laws $ k:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m, \uv=k(\dot{\qv},\qv)$, initial conditions $\qv(0) = \qv_0, \dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists fot all $t \geq 0$. A robotic system is considered safe if its configuration $\qv$ belongs to the safe set $\mathcal{S}$ for all times $t\geq 0$. The authors of the work \cite{mf_cbf} make the following assumption on the safe set $\mathcal{S}$.\\
+\textbf{Assumption 1}. The safe set is defined as the 0-superlevel set of a continuously differentiable function $h: Q \rightarrow \mathbb{R}$:
+\begin{equation} \label{eq:safe set}
+    \mathcal{S} = \{\qv \in Q: h(\qv)\geq 0 \},
+\end{equation}
+where the gradient of $h$ is finite: $\exists C_h \in \mathbb{R}_{>0}$ such that $|| \nabla h(\qv)|| \leq C_h, \forall \qv \in \mathcal{S}$. This means that safety depends on the configuration $\qv$ only and $h$ is independent of $\dot{\qv}$.
+
+Following \cite{mf_cbf} we want to achieve safety by generating a safe velocity. The safe velocity $\dot{\qv}_s \in \mathbb{R}^n$ needs to satisfy:
+\begin{equation} \label{eq:safety constraint}
+    \nabla h(\qv)\dot{\qv}_s \geq -\alpha h(\qv),
+\end{equation}
+for some $\alpha \in \mathbb{R}_{>0}$ to be selected. Note that (\ref{eq:safety constraint}) is a kinematic condition that does not depend on the full dynamics (\ref{eq:dynamic model}).\\
+To track the safe velocity a tracking error $\dot{\ev} = \dot{\qv}-\dot{\qv}_s$ can be defined. A velocity tracking controller $\uv = k(\dot(\qv),\qv)$ is assumed to be able to drive the error $\dot(\ev)$ to zero exponentially.\\
+\textbf{Assumption 2}. The velocity tracking controller $\uv = k(\dot(\qv),\qv)$ achieves exponential stable tracking: $||\dot{\ev}(t)||\leq K ||\dot{\ev}_0|| e^{-\lambda t}$ for some $K,\lambda \in \mathbb{R}_{>0}$. That is, if $\dot{\ev}$ is differentiable there exists a continuously differentiable Lyapunov function $V: Q \times \mathbb{R}^n \rightarrow \mathbb{R}_{\geq 0}$ such that $\forall(\qv,\dot{\ev})\in Q \times \mathbb{R}^n$:
+\begin{equation} \label{eq:lyapunov condition}
+    k_1 || \dot{\ev}|| \leq V(\qv, \dot{\ev}) \leq k_2 || \dot{\ev}||,
+\end{equation}
+for some $k_1,k_2\in \mathbb{R}_{>0}$ such that $\forall(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s)\in Q \times \mathbb{R}^n \times \mathbb{R}^n \times \mathbb{R}^n$ $\uv$ satisfies:
+\begin{equation} \label{eq:controller condition}
+    \dot{V}((\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s),\uv) \leq -\lambda V(\qv,\dot{\ev}).
+\end{equation}\\
+
+The following theorem proves that tracking the safe velocity achieves safety for the full dynamics if the parameter $\alpha$ is chosen small enough. In particular for a tracking controller satisfying the previous assumption stability translate into safety for the dynamic system (\ref{eq:dynamic model}) if $\lambda \geq \alpha$. \\
+\begin{theorem}\label{th:alpha limit}
+    Consider system (\ref{eq:dynamic model}), safe set (\ref{eq:safe set}), and velocity tracking controller satisfying (\ref{eq:controller condition}). If $\lambda \geq \alpha$, safety is achieved such that $(\qv_0,\dot{\ev}_0)\in \mathcal{S}_V \Rightarrow \qv(t) \in \mathcal{S}, \forall t\geq 0$, where:
+    \begin{multline}
+        \mathcal{S}_V = \{ (\qv,\dot{\ev})\in Q \times \mathbb{R}^n: h_V(\qv,\dot{\ev})\geq 0 \},\\
+        h_V(\qv,\dot{\ev}) = -V(\qv,\dot{\ev})+ \alpha_e h(\qv),
+    \end{multline}
+    with $\alpha_e = (\lambda - \alpha)k_1/C_h > 0$ and $C_h,k_1$ defined at (\ref{eq:safe set}) and (\ref{eq:lyapunov condition}).
+\end{theorem}
