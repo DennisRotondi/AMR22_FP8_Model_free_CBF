@@ -40,7 +40,7 @@ The following theorem proves that tracking the safe velocity achieves safety for
     Since $V(q,\dot{\ev}) \geq 0$, the implication $h_V(\qv,\dot{\ev}) \geq 0 \rightarrow h(\qv) \geq 0$ holds. Thus it is sufficient to show that $h_V(\qv,\dot{\ev}) \geq 0$ to prove the theorem. By definition of the initial conditions $h_V(\qv_0,\dot{\ev}_0) \geq 0$ and also:
     \begin{equation*}
         \begin{split}
-            h_V&(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) = -\dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) + \alpha_e \nabla h(\qv)\dot{\qv} \\
+            \dot{h}_V&(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) = -\dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) + \alpha_e \nabla h(\qv)\dot{\qv} \\
             & \geq \lambda V(\qv,\dot{\ev}) + \alpha_e \nabla h(\qv)\dot{\qv}_s + \alpha_e \nabla h(\qv) \dot{\ev} \\
             & \geq \lambda V(\qv,\dot{\ev})  - \alpha_e \alpha h(\qv) + \alpha_e \nabla h(\qv) \dot{\ev} \\
             & \geq (\lambda-\alpha) V(\qv,\dot{\ev}) - \alpha_e ||\nabla h(\qv)|| ||\dot{\ev}|| - \alpha h_V(\qv,\dot{\ev}) \\
