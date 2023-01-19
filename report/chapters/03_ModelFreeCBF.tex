@@ -26,14 +26,14 @@ To track the safe velocity a tracking error $\dot{\ev} = \dot{\qv}-\dot{\qv}_s$ 
 for some $k_1,k_2\in \mathbb{R}_{>0}$ such that $\forall(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s)\in Q \times \mathbb{R}^n \times \mathbb{R}^n \times \mathbb{R}^n$ $\uv$ satisfies:
 \begin{equation} \label{eq:controller condition}
     \dot{V}((\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s),\uv) \leq -\lambda V(\qv,\dot{\ev}).
-\end{equation}\\
-
-The following theorem proves that tracking the safe velocity achieves safety for the full dynamics if the parameter $\alpha$ is chosen small enough. In particular for a tracking controller satisfying the previous assumption stability translate into safety for the dynamic system (\ref{eq:dynamic model}) if $\lambda \geq \alpha$. \\
+\end{equation}
+The following theorem proves that tracking the safe velocity achieves safety for the full dynamics if the parameter $\alpha$ is chosen small enough. In particular for a tracking controller satisfying the previous assumption stability translate into safety for the dynamic system (\ref{eq:dynamic model}) if $\lambda > \alpha$. 
 \begin{theorem}\label{th:alpha limit}
-    Consider system (\ref{eq:dynamic model}), safe set (\ref{eq:safe set}), and velocity tracking controller satisfying (\ref{eq:controller condition}). If $\lambda \geq \alpha$, safety is achieved such that $(\qv_0,\dot{\ev}_0)\in \mathcal{S}_V \Rightarrow \qv(t) \in \mathcal{S}, \forall t\geq 0$, where:
-    \begin{multline}
-        \mathcal{S}_V = \{ (\qv,\dot{\ev})\in Q \times \mathbb{R}^n: h_V(\qv,\dot{\ev})\geq 0 \},\\
-        h_V(\qv,\dot{\ev}) = -V(\qv,\dot{\ev})+ \alpha_e h(\qv),
-    \end{multline}
+    Consider system (\ref{eq:dynamic model}), safe set (\ref{eq:safe set}), and velocity tracking controller satisfying (\ref{eq:controller condition}). If $\lambda > \alpha$, safety is achieved such that $(\qv_0,\dot{\ev}_0)\in \mathcal{S}_V \Rightarrow \qv(t) \in \mathcal{S}, \forall t\geq 0$, where:
+    \begin{align}
+        &\mathcal{S}_V = \{ (\qv,\dot{\ev})\in Q \times \mathbb{R}^n: h_V(\qv,\dot{\ev})\geq 0 \},\\
+        &h_V(\qv,\dot{\ev}) = -V(\qv,\dot{\ev})+ \alpha_e h(\qv),
+    \end{align}
     with $\alpha_e = (\lambda - \alpha)k_1/C_h > 0$ and $C_h,k_1$ defined at (\ref{eq:safe set}) and (\ref{eq:lyapunov condition}).
 \end{theorem}
+\textbf{Remark 1}: The parameter $\lambda$ depends on how well/fast the actual robot is able to track the safe velocities commands coming from the unicycle model. However, if the robot is able to exponentially track those safe velocities, then, such parameter exists, and therefore there exixts an $\alpha$ parameter such that $\alpha <\lambda$ and safety is achieved. It follows that, actually, $\lambda$ serves more as a tool for the theoretical proof of safety.
