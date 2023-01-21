@@ -10,24 +10,26 @@ set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 2
 %% robot initialization
 qstart = [-2 0.1 0]';      % starting pose (x0 y0 theta0)
 vwstart = [0 0]';          % starting velocities (w0,v0)
-m = 0.2;                   % mass
-Icm = 1e-2;                % inertia
-a = 0.80;                  % distance from the center 
-params=[m,Icm,a];          % vector of parameters
+m = 5;                 % mass              % inertia
+a = 0.20;                  % distance from the center 
 robot_radius = 0.3;
+Icm = 1/2*m*robot_radius^2; 
+params=[m,Icm,a];          % vector of parameters
+
 %% simulation stuff
 % 1 for watching the robot movie
 % 0 else
 animation_mode = 0;                  
-simTime = 150;              % time of simulation
-MAP = "map_2";
+simTime = 50;              % time of simulation
+MAP = "map_4";
 obstacles = setup_environment(MAP,a,robot_radius);
 %% control parameters
-qg=[6 ; 0];                % qgoal
-Kp = 6;                  % proportional
-Kd = 6;                    % derivative
-alpha = 0.1;                 % barrier certificate param 
-threshold_skip = 0;        % 0.05
+qg=[4 ; -1];                 % qgoal
+Kp = 2;                      % proportional
+Kd = 100;                      % derivative
+alpha = 0.2;                   % barrier certificate param 
+threshold_skip = 0;          % 0.05
+delta = 0.5;                 % barrier parameter
 %% run simulation
 out = sim('simulation_UMFCBF');           % from sim
 % import simData from simulink
