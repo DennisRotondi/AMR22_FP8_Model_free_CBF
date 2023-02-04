@@ -1,10 +1,85 @@
-\section{Background on Control Barrier Functions}
-Consider a generic nonlinear control-affine system, whose dynamical model is expressed as:
+
+% TODOES:
+%section 1: CBF inserendo le defnizioni e risultati più importanti dei papers, descrivendo il dualismo con CLF che poi verrà referenziato nella sezione MFCBF per la dimostrazione (Exponential stability sufficiente).
+
+
+% In this project, we will address robotic systems with the following dynamic model:
+% \begin{equation}
+%     \Dm(\qv)\ddqv+\Cm(\qv,\dqv)\dqv+\Gm(\qv) = \Bm\uv
+%     \label{eq:consdynmod}
+% \end{equation}
+% % \begin{equation}
+% %     \Dm(\qv)\ddqv+\nv(\qv,\dqv) = \Bm(\qv)\uv+\Am(\qv)\lambdav
+% %     \label{eq:consdynmod}
+% % \end{equation}
+% % \begin{equation}
+% %     \Am^T(\qv)\dqv = \zerov
+% %     \label{eq:const}
+% % \end{equation}
+% Where $\qv$ is a vector of generalized coordinates that are part of the configuration space $\calCm$ of dimension $N$; $\Dm(\qv) \in \mathbb{R}^{N\times N}$ is the inertia matrix, $\Cm(\qv,\dqv) \in \mathbb{R}^{N\times N}$ collects the centrifugal and Coriolis forces, $\Gm(\qv) \in \mathbb{R}^{N}$ involves gravity terms and $\Bm \in \mathbb{R}^{N\times M}$ is the input matrix
+
+% $\Dm(\qv)$ is the inertia matrix; $\nv(\qv,\dqv)$ contains gravity terms, centrifugal and Coriolis forces; $\Bm(\qv)$ is the input matrix and $\Am(\qv)$ is the transpose of the matrix characterizingthe kinematic constraints that together with the Langrange multipliers $\lambdav$ reprsents the vector of reaction forces at generalized coordinate level. Dimensions and many other details are found in \cite{robbook}. In case of unconstrained robot simply $\Am(\qv) = \zerom$ making relevant only \eqref() , 
+
+\section{Safety-Critical Control for Robotic Systems}
+A safety controller is not intended to function independently, but rather to support the primary, potentially unsafe controller that is designed to achieve standard control objectives such as stability, regulation, or tracking. To ensure a complete understanding of the tools used hereinafter, we will briefly review several concepts and provide the necessary definitions. 
+Firstly, the robotic systems under examination are those in the nonlinear affine form:
 \begin{equation}
-\dot{\xv}=f(\xv)+g(\xv)\uv
-\label{system}
+    \dot{\xv}=\fv(\xv)+\gv(\xv)\uv,
+    \label{eq:system}
 \end{equation}
-where $\xv\in\mathcal{D}\subset \mathbb{R}^n$ is the state and $\uv\in U \subseteq \mathbb{R}^m$, the control input. Assume that the functions $f:\mathbb{R}^n\to\mathbb{R}^n$ and $g:\mathbb{R}^n\to\mathbb{R}^{n\times m} $ are assumed to be locally Lipschitz functions.
+where $\xv\in X\subseteq \mathbb{R}^n$ is the state, $\uv\in U \subseteq \mathbb{R}^m$ the control input, with $\fv : X\to\mathbb{R}^n$ and $\gv : X\to\mathbb{R}^{n\times m} $ locally Lipschitz continuous functions. 
+%We also assume that $x^* = 0$ is an equilibrium of \eqref{eq:system} and X is an open and connected neighborhood of $x^*$.
+%We say that a continuous function $f: [0,b) \rightarrow \mathbb{R}_{\geq 0}, where $b \in \mathbb{R}_{\geq 0}$ (or $f: (a,b) \rightarrow R$, where $a,b \in R^+$) is of class-K (or extended class-K) if it is strictly monotonically increasing and $f(0) = 0$. need for dist
+\subsection{Control Lyapunov Functions}
+In Lyapunov theory, stabilizing \eqref{eq:system} to a point $\xv^*=\zerov$ (assuming 
+$\xv^*$ is an equilibrium of \eqref{eq:system} and 
+$X$ is an open and connected neighborhood of $\xv^*$) can be achieved by finding a feedback control law $\uv=\kv(\xv)$ that drives a positive definite function, $V: D \subset \mathbb{R}^n \to \mathbb{R}_{\geq 0}$, to zero. That is, if:
+\begin{equation}
+    \forall \xv\in X ~~~~ \inf_{\uv\in U}[\dot{V}(\xv,\uv)] \leq -\gamma(V(\xv)),
+\label{eq:condition}
+\end{equation}
+where
+\begin{equation}
+    \dot{V}(\xv,\kv(\xv)) = \nabla V(\xv)\cdot(\fv(\xv)+\gv(\xv)\uv)= L_{\fv}V(\xv)+L_{\gv}V(\xv)\uv.
+\label{eq:vdot}
+\end{equation}
+Note: $\gamma : \mathbb{R}_{\geq 0} \to \mathbb{R}_{\geq 0} $ is a class-$\mathcal{K}$ function here, 
+recalling that a continuous function $\zeta : [0, b) \to \mathbb{R}_{\geq 0},~b \in \mathbb{R}_{\geq 0}$ is of class-$\mathcal{K}$ (or $\zeta : [-a, b) \to \mathbb{R}_{\geq 0},~a,b \in \mathbb{R}_{\geq 0}$ is of extended class-$\mathcal{K}$) if it is strictly monotonically increasing and $\zeta(0) = 0$.
+\begin{theorem}\label{th:clft}
+If V is a control Lyapunov function (CLF) for \eqref{eq:system}, i.e. a positive definite function satisfing \eqref{eq:condition}, then any Lipschitz continuous feedback controller $\uv(\xv$) satisfying $\dot{V}(\xv,\uv) \leq -\gamma(V(\xv))~\forall \xv\in X$ asymptotically stabilizes the system to $\xv^*$.
+\end{theorem}
+\subsubsection{Exponential Stability}
+\begin{definition}
+If there exist $c,k1,k2,\lambda \in \mathbb{R}_{> 0} \text{~such that~} \forall \xv \in X:$ 
+\begin{equation}
+    \begin{split}
+    k1||\xv||^c \leq V(\xv) \leq k2||\xv||^c,  \\
+    \inf_{{\uv\in \mathbb{R}^m}}[\dot{V}(\xv,\uv)] \leq -\lambda V(\xv),~
+    \end{split}
+    \label{eq:expstabcond}
+\end{equation}
+for a continuously differentiable function $V : X \to \mathbb{R}_{\geq 0}$, then V is a CLF for \eqref{eq:system}.
+\label{def:expclf}
+\end{definition}
+
+\begin{theorem}\label{th:clftexp}
+If V is a CLF that respects Definition \ref{def:expclf}, then any locally Lipschitz continuous controller $\uv=\kv(\xv)$ satisfying 
+\begin{equation}
+\dot{V}(\xv,\uv) \leq -\lambda V(\xv),
+\end{equation}
+$\forall \xv \in X$ renders $\xv^*$ exponentially stable i.e.~there exist $a,M,\beta \in \mathbb{R}_{>0}$ such that 
+$|| \xv_0 || \leq a \Rightarrow || \xv(t) || \leq Me^{-\beta t}|| \xv_0 ||,~\forall t\geq 0.$
+\end{theorem}
+
+\subsection{Control Barrier Functions}
+To cover the essentials of control barrier functions we are going to define some 
+
+We begin by reviewing stability arguments which will be used to support our project results in future.
+
+
+The tool that we are going to use is... in this section we'll review the tools needed to better understand this ... explain how they are introduced  ...
+Consider a generic nonlinear control-affine system, whose dynamical model is expressed as:
+
 \begin{definition} Let $\mathcal{C}\subset \mathcal{D}\subseteq \mathbb{R}^n$ be the $0$-superlevel set of a continuously  differentiable function $h:\mathcal{D}\to\mathbb{R}$:
 \begin{equation}
 \begin{aligned}
@@ -31,7 +106,10 @@ L_fh(\xv) + L_gh(\xv)\uv]
 $\forall{\xv}\in\mathcal{C}$ renders (\ref{system}) safe w.r.t $\mathcal{C}$. 
 \end{theorem}
 \end{definition}
-\textbf{Control synthesis:} Theorem  \ref{theorem1} establishes safety-critical controller synthesis by condition (\ref{cond:2}). Satisfying  (\ref{cond:2}) may require a complex analytic procedure. Moreover, the safety controller is generally not meant to operate by itself but rather to support s primary, possibly unsafe controller designed to achieve standard control objectives, like stability, regulation or tracking. A minimally invasive strategy to obtain this result it to set up an optimization-based control problem whose objectives is to minimize the difference between the desire, possibly unsafe controller $k_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
+
+
+\subsection{Control synthesis}
+Theorem  \ref{theorem1} establishes safety-critical controller synthesis by condition (\ref{cond:2}). Satisfying  (\ref{cond:2}) may require a complex analytic procedure. Moreover, the safety controller is generally not meant to operate by itself but rather to support s primary, possibly unsafe controller designed to achieve standard control objectives, like stability, regulation or tracking. A minimally invasive strategy to obtain this result it to set up an optimization-based control problem whose objectives is to minimize the difference between the desire, possibly unsafe controller $k_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
 \begin{equation}
 \begin{aligned}
 k(\xv)=\underset{\uv\in U}{\arg\min}  &(\uv-k_d(\xv))^T(\uv-k_d(\xv)) \\ 
@@ -39,3 +117,18 @@ k(\xv)=\underset{\uv\in U}{\arg\min}  &(\uv-k_d(\xv))^T(\uv-k_d(\xv)) \\
 \end{aligned}
 \end{equation}
 The role of $\alpha$ is to provide to the designed a way to modulate the action of the CBF, depending on whether a more conservative or a more aggressive behavior is desired.
+
+\subsection{Effect of disturbances}
+In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with those disturbances, the notion of exponential input-to-state stability is of paramount importance. This notion comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Me^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$. 
+Since $\beta>0$, solutions converge to a neighborhood of the origin which depends on the size of the disturbance. Exponential ISS is achieved by requiring that : 
+\begin{equation} 
+\dot{V}(\xv,\uv,\dv) \leq -\lambda V(\xv)+\iota( ||\dv||_\infty)
+\end{equation} for some class-$\mathcal{K}$ function $\iota$. Similarly, safety can be extended to \textit{input-to-state safety} (ISSf) by requiring that the system stays within a neighbourhood $S_d \supseteq  S $ of the safe set $S$ which clearly depends on the entity of the disturbance i.e. $\xv_0 \in S_d \Rightarrow \xv(t) \in S_d, \forall t\geq 0$. This neighbourhood is defined as a 0-superlevel set: 
+\begin{equation}
+    S_d = \{\xv \in X: h(\xv) + \gamma(||\dv||_\infty)\geq 0\} 
+\end{equation}
+with some class-$\mathcal{K}$ function $\gamma$. Then ISSf is guaranteed by imposing : 
+\begin{equation}
+    \dot{h}(\xv,\uv,\dv)\geq -\alpha h(\xv)  \iota(||\dv||_\infty) 
+\end{equation}
+for some class-$\mathcal{K}$ function $\iota$.
