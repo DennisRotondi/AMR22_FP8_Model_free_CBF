@@ -1,12 +1,12 @@
 \section{Model Free Control Barrier Functions}
-The work in \cite{mf_cbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, then this velocity is tracked by a velocity tracking controller. Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
+The work in \cite{mf_cbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, and then this velocity is tracked by a velocity tracking controller. Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
 Consider now a robotic system with configuration space $Q \subseteq \mathbb{R}^n$, configuration coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics:
 \begin{equation} \label{eq:dynamic model}
     M(\qv)\ddot{\qv}+C(\qv,\dot{\qv})\dot{\qv}+G(\qv)=B\uv,
 \end{equation}
-where $M(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $C(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ models centrifugal and Coriolis forces, $G(\qv)$ is the gravity term, and $B\in\mathbb{R}^{n \times m}$ is the input matrix.
+where $M(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $C(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ models centrifugal and Coriolis forces, $G(\qv)$ is the gravity term, and $B\in\mathbb{R}^{n \times m}$ is the input matrix. The fact that the matrix $B$ is constant is by choice since the following results are limited to robots with $B$ constant and no kinematic constraints. In the experiment section this approach is also applied to a unicycle, with the aim of studying the properties of such an approach when these conditions for the dynamic model are not respected.
 
-We consider control laws $ k:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m, \uv=k(\dot{\qv},\qv)$, initial conditions $\qv(0) = \qv_0, \dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists fot all $t \geq 0$. A robotic system is considered safe if its configuration $\qv$ belongs to the safe set $\mathcal{S}$ for all times $t\geq 0$. The authors of the work \cite{mf_cbf} make the following assumption on the safe set $\mathcal{S}$.\\
+We now show from where the proposed model-free approach comes from. Let us consider control laws $ k:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m, \uv=k(\dot{\qv},\qv)$, initial conditions $\qv(0) = \qv_0, \dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists fot all $t \geq 0$. A robotic system is considered safe if its configuration $\qv$ belongs to the safe set $\mathcal{S}$ for all times $t\geq 0$. The authors of the work \cite{mf_cbf} make the following assumption on the safe set $\mathcal{S}$.\\
 \textbf{Assumption 1}. The safe set is defined as the 0-superlevel set of a continuously differentiable function $h: Q \rightarrow \mathbb{R}$:
 \begin{equation} \label{eq:safe set}
     \mathcal{S} = \{\qv \in Q: h(\qv)\geq 0 \},
@@ -84,7 +84,7 @@ where $K_d \in \mathbb{R}^{m \times n}$ is selected so that $K=B K_d$ is positiv
 \begin{equation} \label{eq:lambda}
     \lambda = \frac{\sigma_{\min}(K)}{\sup_{\qv \in Q} \sigma_{\max}(M(\qv))},
 \end{equation}
-where $\sigma_{\min}$ and $\sigma_{\max}$ denote the smallest and largest eigenvalues. The eigenvalues are positive real numbers since $M(\qv)$ and $K$ are positive definite. Accordingly, $\lambda$ characterizes how fast a controller may track the desired velocity since representes the smallest gain divided by the largest inertia. The proposed controller can be associated with the the Lyapunov function candidate:
+where $\sigma_{\min}$ and $\sigma_{\max}$ denote the smallest and largest eigenvalues. The eigenvalues are positive real numbers since $M(\qv)$ and $K$ are positive definite. Accordingly, $\lambda$ characterizes how fast a controller may track the desired velocity since it representes the smallest gain divided by the largest inertia. The proposed controller can be associated with the Lyapunov function candidate:
 \begin{equation} \label{eq:lyapunov candidate}
     V(\qv,\dot{\ev}) = \sqrt{\frac{1}{2} \dot{\ev}^T M(\qv) \dot{\ev}},
 \end{equation}
