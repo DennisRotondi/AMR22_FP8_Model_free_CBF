@@ -2,9 +2,9 @@
 The work in \cite{mf_cbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, then this velocity is tracked by a velocity tracking controller. Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
 Consider now a robotic system with configuration space $Q \subseteq \mathbb{R}^n$, configuration coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics:
 \begin{equation} \label{eq:dynamic model}
-    M(\qv)\ddot{\qv}+N(\qv,\dot{\qv})=B\uv,
+    M(\qv)\ddot{\qv}+C(\qv,\dot{\qv})\dot{\qv}+G(\qv)=B\uv,
 \end{equation}
-where $M(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $N(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ models centrifugal, Coriolis forces, and the gravity terms, and $B\in\mathbb{R}^{n \times m}$ is the input matrix.
+where $M(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $C(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ models centrifugal and Coriolis forces, $G(\qv)$ is the gravity term, and $B\in\mathbb{R}^{n \times m}$ is the input matrix.
 
 We consider control laws $ k:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m, \uv=k(\dot{\qv},\qv)$, initial conditions $\qv(0) = \qv_0, \dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists fot all $t \geq 0$. A robotic system is considered safe if its configuration $\qv$ belongs to the safe set $\mathcal{S}$ for all times $t\geq 0$. The authors of the work \cite{mf_cbf} make the following assumption on the safe set $\mathcal{S}$.\\
 \textbf{Assumption 1}. The safe set is defined as the 0-superlevel set of a continuously differentiable function $h: Q \rightarrow \mathbb{R}$:
@@ -94,5 +94,28 @@ that has the bound (\ref{eq:lyapunov condition}) with
 \end{equation}
 The linear class-$\mathcal{K}$ function $\iota$ can also be defined as $\iota(||d||_\infty)=||d||_\infty / (2 k_1)$. With the reported controller the parameters to be selected during control design are $\alpha$ and $K_D$. Now it can be shown that the controller satisfies the required stability properties.
 \begin{theorem}
-    Consider system (\ref{eq:dynamic model}), Lyapunov function V (\ref{eq:lyapunov candidate}), constant $\lambda$ given by (\ref{eq:lambda}) and $\dot{\ev} \neq 0$. Then controller (\ref{eq:mf controller}) satisfies the ISS condition (\ref{eq:controller condition disturbance}) with respect to $d = -M(\qv)\ddot{\qv}_s-N(\qv,\dot{\qv},\dot{\qv}_s)$.
+    Consider system (\ref{eq:dynamic model}), Lyapunov function V (\ref{eq:lyapunov candidate}), constant $\lambda$ given by (\ref{eq:lambda}) and $\dot{\ev} \neq 0$. Then controller (\ref{eq:mf controller}) satisfies the ISS condition (\ref{eq:controller condition disturbance}) with respect to $d = -M(\qv)\ddot{\qv}_s-C(\qv,\dot{\qv})\dot{\qv}_s-G(\qv)$.
 \end{theorem}
+\begin{proof}
+    To prove this theorem first $V$, from (\ref{eq:lyapunov candidate}), can be differentiated, leading to:
+    \begin{equation}
+        \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,d) = \frac{1}{2 V(\qv,\dot{\ev})} \left( \frac{1}{2}\dot{\ev}^T \dot{M}(\qv) \dot{\ev}+\dot{\ev}^T M(\qv) \ddot{\ev} \right).
+    \end{equation}
+    Looking at the dynamic model (\ref{eq:dynamic model}) and by definition of the error $\dot{\ev}$ we obtain:
+    \begin{equation}
+        M(\qv)\ddot{\ev}=-C(\qv,\dot{\qv})\dot{\ev}-M(\qv)\ddot{\qv}_s-C(\qv,\dot{\qv})\dot{\qv}_s-G(\qv)\uv+B\uv     
+    \end{equation}
+    For the considered controller, (\ref{eq:mf controller}), this leads to:
+    \begin{equation} \label{eq:V dot}
+        \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,d) = \frac{-\dot{\ev}^T K \dot{\ev} + \dot{\ev}^T d}{2 V(\qv,\dot{\ev})},
+    \end{equation}
+    where the term $\dot{\ev}^T(\dot{M}(\qv,\dot{\qv})-2C(\qv,\dot{\qv}))\dot{\ev}$ is dropped since $\dot{M}(\qv,\dot{\qv})-2C(\qv,\dot{\qv})$ is \\skew-symmetric. Based on (\ref{eq:V dot}) now it can be shown that (\ref{eq:controller condition disturbance}) holds. Since (\ref{eq:lambda}) implies that $\dot{\ev}^T K\dot{\ev}-\lambda \dot{\ev}^T M(q) \dot{\ev} \geq 0$ the definition (\ref{eq:lyapunov candidate}) of $V$ leads to:
+    \begin{equation} \label{eq:th2}
+        \frac{-\dot{\ev}^T K\dot{\ev}}{2V(\qv,\dot{\ev})}\leq -\lambda V(\qv,\dot{\ev}),  
+    \end{equation}
+    $\forall \qv \in Q, \dot{\ev} \in \mathbb{R}^n$. Furthermore, for the Cauchy-Schwartz inequality, the bound (\ref{eq:lyapunov condition}) on $V$ and the definition of $\iota$ yield:
+    \begin{equation} \label{eq:th3}
+        \frac{\dot{\ev}^T\dv}{2V(\qv,\dot{\ev})}\leq \frac{\lVert \dot{\ev}\rVert \lVert \dv \rVert _\infty}{2k_1\lVert \dot{\ev} \rVert}=\iota(\lVert \dv \rVert _\infty),
+    \end{equation}
+    where $||\dot{\ev}||$ drops, making the right-hand side independent of time. Substituting (\ref{eq:th2},\ref{eq:th3}) into (\ref{eq:V dot}) yields (\ref{eq:controller condition disturbance}).
+\end{proof}
