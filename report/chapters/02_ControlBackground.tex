@@ -68,8 +68,8 @@ If V is a CLF that respects Definition \ref{def:expclf}, then any locally Lipsch
 \begin{equation}
 \dot{V}(\xv,\uv) \leq -\lambda V(\xv),
 \end{equation}
-$\forall \xv \in X$ renders $\xv^*$ exponentially stable i.e.~there exist $a,M,\beta \in \mathbb{R}_{>0}$ such that 
-$|| \xv_0 || \leq a \Rightarrow || \xv(t) || \leq Me^{-\beta t}|| \xv_0 ||,~\forall t\geq 0.$
+$\forall \xv \in X$ renders $\xv^*$ exponentially stable i.e.~there exist $a,A,\beta \in \mathbb{R}_{>0}$ such that 
+$|| \xv_0 || \leq a \Rightarrow || \xv(t) || \leq Ae^{-\beta t}|| \xv_0 ||,~\forall t\geq 0.$
 \end{theorem}
 
 \subsection{Control Barrier Functions}
@@ -99,7 +99,7 @@ L_{\fv}h(\xv) + L_{\gv}h(\xv)\uv]
 
 
 \begin{theorem}
-    \label{theorem1}If $h : X \to \mathbb{R}$ is a CBF for \eqref{eq:system}, then any locally Lipschitz continuous controller $\uv = \kv(\xv)$ satisfying
+    \label{th:cbf}If $h : X \to \mathbb{R}$ is a CBF for \eqref{eq:system}, then any locally Lipschitz continuous controller $\uv = \kv(\xv)$ satisfying
 \begin{equation}
 \dot{h}(\xv,\kv(\xv))\geq -\alpha h(\xv)
 \label{cond:2}
@@ -113,7 +113,7 @@ It interesting to point out that CLFs yield invariant level sets as well. If the
 
 
 \subsubsection{Control synthesis}
-Theorem \ref{theorem1} establishes safety-critical controller 
+Theorem \ref{th:cbf} establishes safety-critical controller 
 synthesis by means of condition (\ref{cond:2}). However, satisfying  it may require a complex analytic procedure. A minimally invasive strategy to obtain this result is to set up an optimization-based control problem whose objectives is to minimize the difference between the desired, possibly unsafe controller $\kv_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
 \begin{equation}
 \begin{aligned}
@@ -123,15 +123,15 @@ synthesis by means of condition (\ref{cond:2}). However, satisfying  it may requ
 \end{equation}
 Additional requirements can be imposed, such as keeping the input within specific limits, and it can be shown that the controller obtained through this method is Lipschitz continuous.
 \subsection{Effect of disturbances}
-In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with these disturbances, the notion of exponential \textit{input-to-state stability} (ISS) is of paramount importance. This notion comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Me^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$; where $||\cdot||_\infty$  is the maximum norm.
+In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with these disturbances, the notion of exponential \textit{input-to-state stability} (ISS) is of paramount importance. This notion comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Le^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$; where $||\cdot||_\infty$  is the maximum norm.
 Since $\beta>0$, solutions converge to a neighborhood of the origin which depends on the size of the disturbance. Exponential ISS is achieved by requiring that : 
-\begin{equation} 
+\begin{equation}\label{eq:iss}
 \dot{V}(\xv,\uv,\dv) \leq -\lambda V(\xv)+\iota( ||\dv||_\infty)
 \end{equation} for some class-$\mathcal{K}$ function $\iota$. Similarly, safety can be extended to \textit{input-to-state safety} (ISSf) by requiring that the system stays within a neighbourhood $\mathcal{S}_d \supseteq  \mathcal{S}$ of the safe set $\mathcal{S}$ which clearly depends on the entity of the disturbance, i.e. $\xv_0 \in \mathcal{S}_d \Rightarrow \xv(t) \in \mathcal{S}_d, \forall t\geq 0$. This neighbourhood is defined as a 0-superlevel set: 
 \begin{equation}
     S_d = \{\xv \in X: h(\xv) + \gamma(||\dv||_\infty)\geq 0\}
 \end{equation}
-with some class-$\mathcal{K}$ function $\gamma$. Then ISSf is guaranteed by imposing : 
+with some class-$\mathcal{K}$ function $\gamma$. Then ISSf is guaranteed by imposing in Theorem \ref{th:cbf}: 
 \begin{equation}
     \dot{h}(\xv,\uv,\dv)\geq -\alpha h(\xv) - \iota(||\dv||_\infty).
 \end{equation}
