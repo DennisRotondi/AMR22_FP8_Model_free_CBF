@@ -21,7 +21,7 @@
 % $\Dm(\qv)$ is the inertia matrix; $\nv(\qv,\dqv)$ contains gravity terms, centrifugal and Coriolis forces; $\Bm(\qv)$ is the input matrix and $\Am(\qv)$ is the transpose of the matrix characterizingthe kinematic constraints that together with the Langrange multipliers $\lambdav$ reprsents the vector of reaction forces at generalized coordinate level. Dimensions and many other details are found in \cite{robbook}. In case of unconstrained robot simply $\Am(\qv) = \zerom$ making relevant only \eqref() , 
 
 \section{Safety-Critical Control for Robotic Systems}
-A safety controller is not intended to function independently, but rather to support the primary, potentially unsafe controller that is designed to achieve standard control objectives such as stability, regulation, or tracking. To ensure a complete understanding of the tools used hereinafter, we will briefly review several concepts and provide the necessary definitions. 
+A safety controller is not intended to function independently, but rather to support the primary, potentially unsafe controller that is designed to achieve standard control objectives such as stability, regulation, or tracking. To guarantee full comprehension of the tools used hereinafter, we will briefly review several concepts and provide the necessary definitions. 
 Firstly, the robotic systems under examination are those in the nonlinear affine form:
 \begin{equation}
     \dot{\xv}=\fv(\xv)+\gv(\xv)\uv,
@@ -44,21 +44,22 @@ where
 \label{eq:vdot}
 \end{equation}
 Note: $\gamma : \mathbb{R}_{\geq 0} \to \mathbb{R}_{\geq 0} $ is a class-$\mathcal{K}$ function here, 
-recalling that a continuous function $\zeta : [0, b) \to \mathbb{R}_{\geq 0},~b \in \mathbb{R}_{\geq 0}$ is of class-$\mathcal{K}$ (or $\zeta : [-a, b) \to \mathbb{R}_{\geq 0},~a,b \in \mathbb{R}_{\geq 0}$ is of extended class-$\mathcal{K}$) if it is strictly monotonically increasing and $\zeta(0) = 0$.
+recalling that a continuous function $\zeta : [0, b) \to \mathbb{R}_{\geq 0},~b \in \mathbb{R}_{\geq 0}$ is of class-$\mathcal{K}$ (or $\zeta : [-a, b) \to \mathbb{R}_{\geq 0},~a,b \in \mathbb{R}_{\geq 0}$ is of extended class-$\mathcal{K}$) if it is strictly monotonically increasing and $\zeta(0) = 0$. We say to have an extended class-$\mathcal{K}_\infty$ if a,b can be equal to $\infty$.
 \begin{theorem}\label{th:clft}
-If V is a control Lyapunov function (CLF) for \eqref{eq:system}, i.e. a positive definite function satisfing \eqref{eq:condition}, then any Lipschitz continuous feedback controller $\uv(\xv$) satisfying $\dot{V}(\xv,\uv) \leq -\gamma(V(\xv))~\forall \xv\in X$ asymptotically stabilizes the system to $\xv^*$.
+If $V$ is a control Lyapunov function (CLF) for \eqref{eq:system}, i.e. a positive definite function satisfing \eqref{eq:condition}, then any Lipschitz continuous feedback controller $\uv(\xv$) satisfying $\dot{V}(\xv,\uv) \leq -\gamma(V(\xv))~\forall \xv\in X$ asymptotically stabilizes the system to $\xv^*$.
 \end{theorem}
 \subsubsection{Exponential Stability}
+Another very important stability property can be introduced from the following:
 \begin{definition}
-If there exist $c,k1,k2,\lambda \in \mathbb{R}_{> 0} \text{~such that~} \forall \xv \in X:$ 
+If there exist $c,k_1,k_2,\lambda \in \mathbb{R}_{> 0} \text{~such that~} \forall \xv \in X:$ 
 \begin{equation}
     \begin{split}
-    k1||\xv||^c \leq V(\xv) \leq k2||\xv||^c,  \\
+    k_1||\xv||^c \leq V(\xv) \leq k_2||\xv||^c,  \\
     \inf_{{\uv\in \mathbb{R}^m}}[\dot{V}(\xv,\uv)] \leq -\lambda V(\xv),~
     \end{split}
     \label{eq:expstabcond}
 \end{equation}
-for a continuously differentiable function $V : X \to \mathbb{R}_{\geq 0}$, then V is a CLF for \eqref{eq:system}.
+for a continuously differentiable function $V : X \to \mathbb{R}_{\geq 0}$, then $V$ is a CLF for \eqref{eq:system}.
 \label{def:expclf}
 \end{definition}
 
@@ -72,63 +73,65 @@ $|| \xv_0 || \leq a \Rightarrow || \xv(t) || \leq Me^{-\beta t}|| \xv_0 ||,~\for
 \end{theorem}
 
 \subsection{Control Barrier Functions}
-To cover the essentials of control barrier functions we are going to define some 
 
-We begin by reviewing stability arguments which will be used to support our project results in future.
+In contrast to stability, which is concerned with guiding a system towards a specific point or set, safety can be conceptualized as enforcing the invariance of a set. For a dynamic system, safety constraints can be viewed as defining a safe region within its state space, where the state must always reside. This region is referred to as the safe set $\mathcal{S}$. 
 
-
-The tool that we are going to use is... in this section we'll review the tools needed to better understand this ... explain how they are introduced  ...
-Consider a generic nonlinear control-affine system, whose dynamical model is expressed as:
-
-\begin{definition} Let $\mathcal{C}\subset \mathcal{D}\subseteq \mathbb{R}^n$ be the $0$-superlevel set of a continuously  differentiable function $h:\mathcal{D}\to\mathbb{R}$:
-\begin{equation}
-\begin{aligned}
-\mathcal{C} =& \{\xv\in\mathbb{R}^n :& h(\xv)\geq 0\} \\
-\partial{\mathcal{C}} =& \{\xv\in\mathbb{R}^n :& h(\xv)= 0\} \\
-\mathrm{Int}({\mathcal{C}}) =& \{\xv\in\mathbb{R}^n :& h(\xv)> 0\} \\
+\begin{definition} Let $\mathcal{S}\subset X\subseteq \mathbb{R}^n$ be a compact set that is the $0$-superlevel set of a continuously  differentiable function $h:X\to\mathbb{R}$, $\forall \xv \in X$:
+    \begin{equation}
+        \begin{aligned}
+\mathcal{S} =& \{\xv\in\mathbb{R}^n :& h(\xv)\geq 0\}, \\
+\partial{\mathcal{S}} =& \{\xv\in\mathbb{R}^n :& h(\xv)= 0\}, \\
+\mathrm{Int}({\mathcal{S}}) =& \{\xv\in\mathbb{R}^n :& h(\xv)> 0\}. \\
 \end{aligned}
 \end{equation}
 \end{definition}
-\begin{definition} System (\ref{system}) is \textit{safe} w.r.t $\mathcal{C}$ if $\mathcal{C}$ is forward invariant under (\ref{system}), that is, $\xv_0\in\mathcal{C}\Rightarrow \xv(t)\in\mathcal{C}, \forall t\geq0$.
-Then, $h$ is a control barrier function (CBF) if $\frac{\partial{h}}{\partial \xv} (\xv)\neq 0$ for all $\xv\in \partial{\mathcal{C}}$ and there exists $\alpha \in \mathbb{R}_{>0}$ such that $\forall \xv \in \mathcal{C}$: 
+\noindent
+A matematical tool as a means to guarantee the invariance property of set $\mathcal{S}$ for \eqref{eq:system} is represented by the use of Control Barrier Functions (CBF).
+
+\begin{definition} System \eqref{eq:system} is \textit{safe} w.r.t. $\mathcal{S}$, if $\mathcal{S}$ is forward invariant under \eqref{eq:system}, that is, $\xv_0\in\mathcal{S}\Rightarrow \xv(t)\in\mathcal{S}, \forall t\geq0$.
+Then, $h$ is a CBF for \eqref{eq:system} if $\frac{\partial{h}}{\partial \xv} (\xv)\neq 0$ for all $\xv\in \partial{\mathcal{S}}$ and there exists $\alpha \in \mathbb{R}_{>0}$ such that $\forall \xv \in \mathcal{S}$: 
 \begin{equation}
 \sup_{\uv\in U} \underbrace{ 
 \begin{bmatrix}
-L_fh(\xv) + L_gh(\xv)\uv] 
+L_{\fv}h(\xv) + L_{\gv}h(\xv)\uv] 
 \end{bmatrix}}_{\dot{h}(\xv,\uv)}\geq -\alpha h(\xv)
 \end{equation}
+
+
 \begin{theorem}
-    \label{theorem1}If $h$ is a CBF for (1), then any locally Lipschitz continuous controller $\uv = k(\xv)$ satisfying : 
+    \label{theorem1}If $h : X \to \mathbb{R}$ is a CBF for \eqref{eq:system}, then any locally Lipschitz continuous controller $\uv = \kv(\xv)$ satisfying
 \begin{equation}
-\dot{h}(\xv,k(\xv))\geq \alpha h(\xv)
+\dot{h}(\xv,\kv(\xv))\geq -\alpha h(\xv)
 \label{cond:2}
 \end{equation}
-$\forall{\xv}\in\mathcal{C}$ renders (\ref{system}) safe w.r.t $\mathcal{C}$. 
+$\forall{\xv}\in\mathcal{S}$ renders \eqref{eq:system} safe with respect to $\mathcal{S}$. Additionally, the set $\mathcal{S}$ is asymptotically stable in $X$, hence with the beneficial of drive the system back to the set $\mathcal{S}$ in case of noise or modelling errors.
 \end{theorem}
 \end{definition}
+\noindent
+Generically for these results $\alpha$ may be taken as an extended class-$\mathcal{K}_{\infty}$ function $\alpha(\cdot)$ of $h$.
+It interesting to point out that CLFs yield invariant level sets as well. If these level sets are contained in the safe set, one can guarantee safety, however they are overly strong and conservative. On the other hand the action of CBFs can be modulated by $\alpha(\cdot)$ depending on whether a more conservative or aggressive behavior is desired, while allowing the state to evolve freely within the safe set $\mathcal{S}$. Ideally, as $\alpha \to \infty$, the CBF would activate only on the boundary of the set.
 
 
-\subsection{Control synthesis}
-Theorem  \ref{theorem1} establishes safety-critical controller synthesis by condition (\ref{cond:2}). Satisfying  (\ref{cond:2}) may require a complex analytic procedure. Moreover, the safety controller is generally not meant to operate by itself but rather to support s primary, possibly unsafe controller designed to achieve standard control objectives, like stability, regulation or tracking. A minimally invasive strategy to obtain this result it to set up an optimization-based control problem whose objectives is to minimize the difference between the desire, possibly unsafe controller $k_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
+\subsubsection{Control synthesis}
+Theorem \ref{theorem1} establishes safety-critical controller 
+synthesis by means of condition (\ref{cond:2}). However, satisfying  it may require a complex analytic procedure. A minimally invasive strategy to obtain this result is to set up an optimization-based control problem whose objectives is to minimize the difference between the desired, possibly unsafe controller $\kv_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
 \begin{equation}
 \begin{aligned}
-k(\xv)=\underset{\uv\in U}{\arg\min}  &(\uv-k_d(\xv))^T(\uv-k_d(\xv)) \\ 
-\mathrm{s.t}\,\, &\dot{h}(\xv,\uv)\geq -\alpha h(\xv)
+\kv(\xv)=\underset{\uv\in U}{\arg\min}  &(\uv-\kv_d(\xv))^T(\uv-\kv_d(\xv)), \\ 
+\mathrm{s.t.}\,\, &\dot{h}(\xv,\uv)\geq -\alpha h(\xv).
 \end{aligned}
 \end{equation}
-The role of $\alpha$ is to provide to the designed a way to modulate the action of the CBF, depending on whether a more conservative or a more aggressive behavior is desired.
-
+Additional requirements can be imposed, such as keeping the input within specific limits, and it can be shown that the controller obtained through this method is Lipschitz continuous.
 \subsection{Effect of disturbances}
-In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with those disturbances, the notion of exponential input-to-state stability is of paramount importance. This notion comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Me^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$. 
+In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with these disturbances, the notion of exponential \textit{input-to-state stability} (ISS) is of paramount importance. This notion comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Me^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$; where $||\cdot||_\infty$  is the maximum norm.
 Since $\beta>0$, solutions converge to a neighborhood of the origin which depends on the size of the disturbance. Exponential ISS is achieved by requiring that : 
 \begin{equation} 
 \dot{V}(\xv,\uv,\dv) \leq -\lambda V(\xv)+\iota( ||\dv||_\infty)
-\end{equation} for some class-$\mathcal{K}$ function $\iota$. Similarly, safety can be extended to \textit{input-to-state safety} (ISSf) by requiring that the system stays within a neighbourhood $S_d \supseteq  S $ of the safe set $S$ which clearly depends on the entity of the disturbance i.e. $\xv_0 \in S_d \Rightarrow \xv(t) \in S_d, \forall t\geq 0$. This neighbourhood is defined as a 0-superlevel set: 
+\end{equation} for some class-$\mathcal{K}$ function $\iota$. Similarly, safety can be extended to \textit{input-to-state safety} (ISSf) by requiring that the system stays within a neighbourhood $\mathcal{S}_d \supseteq  \mathcal{S}$ of the safe set $\mathcal{S}$ which clearly depends on the entity of the disturbance, i.e. $\xv_0 \in \mathcal{S}_d \Rightarrow \xv(t) \in \mathcal{S}_d, \forall t\geq 0$. This neighbourhood is defined as a 0-superlevel set: 
 \begin{equation}
-    S_d = \{\xv \in X: h(\xv) + \gamma(||\dv||_\infty)\geq 0\} 
+    S_d = \{\xv \in X: h(\xv) + \gamma(||\dv||_\infty)\geq 0\}
 \end{equation}
 with some class-$\mathcal{K}$ function $\gamma$. Then ISSf is guaranteed by imposing : 
 \begin{equation}
-    \dot{h}(\xv,\uv,\dv)\geq -\alpha h(\xv)  \iota(||\dv||_\infty) 
+    \dot{h}(\xv,\uv,\dv)\geq -\alpha h(\xv) - \iota(||\dv||_\infty).
 \end{equation}
-for some class-$\mathcal{K}$ function $\iota$.

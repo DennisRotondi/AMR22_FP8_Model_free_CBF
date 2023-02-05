@@ -1,10 +1,15 @@
 \section{Model Free Control Barrier Functions}
-The work in \cite{mf_cbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, and then this velocity is tracked by a velocity tracking controller. Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
-Consider now a robotic system with configuration space $Q \subseteq \mathbb{R}^n$, configuration coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics:
+The work in \cite{mfcbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, and then this velocity is tracked by a velocity tracking controller.
+%%% add image robot scheme figure 1
+Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
+Consider now a robotic system with configuration space $Q$
+% \subseteq \mathbb{R}^n$,
+of dimension $n$ and 
+generalized coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics:
 \begin{equation} \label{eq:dynamic model}
     \Mm(\qv)\ddot{\qv}+\Cm(\qv,\dot{\qv})\dot{\qv}+\Gm(\qv)=\Bm\uv,
 \end{equation}
-where $\Mm(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $\Cm(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ models centrifugal and Coriolis forces, $\Gm(\qv)$ is the gravity term, and $\Bm\in\mathbb{R}^{n \times m}$ is the input matrix. The fact that the matrix $\Bm$ is constant is by choice since the following results are limited to robots with $\Bm$ constant and no kinematic constraints. In the experiment section this approach is also applied to a unicycle, with the aim of studying the properties of such an approach when these conditions for the dynamic model are not respected.
+where $\Mm(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $\Cm(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ models centrifugal and Coriolis forces, $\Gm(\qv)$ is the gravity term, and $\Bm\in\mathbb{R}^{n \times m}$ is the input matrix. The fact that the matrix $\Bm$ is constant is by choice since the following results are limited to robots with $\Bm$ constant and no kinematic constraints. In the simulation section this approach is also applied to a unicycle, with the aim of studying the properties of such an approach when these conditions for the dynamic model are not respected.
 
 We now show from where the proposed model-free approach comes from. Let us consider the control law $ \kv:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m, \uv=\kv(\dot{\qv},\qv)$, initial conditions $\qv(0) = \qv_0, \dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists fot all $t \geq 0$. A robotic system is considered safe if its configuration $\qv$ belongs to the safe set $\mathcal{S}$ for all times $t\geq 0$. The authors of the work \cite{mf_cbf} make the following assumption on the safe set $\mathcal{S}$.\\
 \textbf{Assumption 1}. The safe set is defined as the 0-superlevel set of a continuously differentiable function $h: Q \rightarrow \mathbb{R}$:

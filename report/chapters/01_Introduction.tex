@@ -1,10 +1,16 @@
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
 As the reality of autonomous machines is becoming increasingly prevalent, there is a growing interest in designing systems that are safe. In recent years, Control Theory has primarily focused on the property of liveness, specifically asymptotic stability, rather than safety.
-Intuitively, the crucial difference between those two properties is  that safety refer to the absence of "bad" outcomes, while liveness requires the eventual occurrence of "good" outcomes. This distinction suggests that prioritizing the avoidance of fatal events may be favored.
+Intuitively, the crucial difference between those two properties is  that safety refers to the absence of "bad" outcomes, while liveness requires the eventual occurrence of "good" outcomes. This distinction suggests that prioritizing the avoidance of fatal events may be favored.
 Hovewer, the development of controllers for safety-critical systems (those systems for which safety is a major design consideration) typically requires the use of sophisticated and high-dimensional dynamical models. As a consequence, synthesizing control laws for these systems can be complex and challenging  with a non-trivial implementaion. 
 In this project, our focus is on Control Barrier Functions, which can be viewed as the safety property in the form of invariance, in the sense that any trajectory starting inside an invariant set will never reach the complement of the set, which represents the area where undesirable events occur. 
-We will compare the traditional approach outlined in \cite{cbf} to the 2021 model-free alternative presented in \cite{mfcbf} that tries to attenuate the need of a huge dynamic model in the control synthesis for specific subset of them. We aim to explore the benefits and drawbacks of these methods in the context of obstacle avoidance simulation of robotics systems in MATLAB.
+We will compare the traditional approach outlined in \cite{cbf} to the 2021 model-free alternative presented in \cite{mfcbf} that tries to attenuate the need of a huge dynamic model in the control synthesis for a specific subset of them. We aim to explore the benefits and drawbacks of these methods in the context of obstacle avoidance simulation of robotics systems in MATLAB.
 
+%In general, safety constraints may be inher-
+% ently related to the features of the system (e.g., the rotation
+% of the joints, in a robot, is limited, and violating the limit
+% may cause damages) or to the environment that may inter-
+% act with the system (e.g., a robot could be prevented from
+% reaching a given position because of an obstacle). 
 
 % possible foto of set invariance after mentioning the trajectory...
