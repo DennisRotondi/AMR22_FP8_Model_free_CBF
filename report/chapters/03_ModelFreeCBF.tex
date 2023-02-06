@@ -88,13 +88,14 @@ As already shown in \eqref{eq:iss}, for ISS instead of (\ref{eq:controller condi
     Consider system (\ref{eq:dynamic model}), sets $S_d$ and $S_{Vd}$, in (\ref{eq:s d}) and (\ref{eq:s vd}), safe velocity satisfying (\ref{eq:safety constraint}), and velocity tracking controller satisfying (\ref{eq:controller condition disturbance}). If $\lambda > \alpha$, ISSf is achieved such that $(\qv_0,\dot{\ev}_0) \in S_{Vd} \rightarrow \qv(t) \in S_d, \forall t \geq 0$, where $\alpha_e$ is given in Theorem \ref{th:alpha limit} and $\gamma(||\dv||_\infty)=\iota(||\dv||_\infty)/\alpha$.
 \end{theorem}
 \noindent
-The proof follows the same steps as in Theorem \ref{th:alpha limit}, by replacing $h$ and $h_V$ with $h_d$ and $h_{Vd}$. It implies that ISS tracking of a safe velocity translate to ISSF for the full system.
+The proof follows the same steps as in Theorem \ref{th:alpha limit}, by replacing $h$ and $h_V$ with $h_d$ and $h_{Vd}$. It implies that ISS tracking of a safe velocity translate to ISSf for the full system.
 \subsubsection{Velocity Controller Example}
-We can now show a velocity tracking controller that provides ISS by (\ref{eq:controller condition disturbance}). As the simplest choice we take a model-free controller:
+% We can now show a velocity tracking controller that provides ISS by (\ref{eq:controller condition disturbance}). 
+As the simplest choice for a velocity tracking controller that provides ISS by (\ref{eq:controller condition disturbance}), it is possible to take a model-free controller:
 \begin{equation} \label{eq:mf controller}
-    \uv = -\Km_d \dot{\ev},
+    \uv = -\Km_{\!D} \dot{\ev},
 \end{equation}
-where $\Km_d \in \mathbb{R}^{m \times n}$ is selected so that $\Km=\Bm \Km_d$ is positive definite. This controller can be characterized by the constant $\lambda \in \mathbb{R}_{>0}$:
+where $\Km_{\!D} \in \mathbb{R}^{m \times n}$ is selected so that $\Km=\Bm \Km_{\!D}$ is positive definite. This controller is characterized by the constant $\lambda \in \mathbb{R}_{>0}$:
 \begin{equation} \label{eq:lambda}
     \lambda = \frac{\sigma_{\min}(\Km)}{\sup_{\qv \in Q} \sigma_{\max}(\Mm(\qv))},
 \end{equation}
@@ -106,24 +107,26 @@ that has the bound (\ref{eq:lyapunov condition}) with
 \begin{equation} 
     k_1= \inf_{\qv \in Q} \sqrt{\sigma_{\min} (\Mm(\qv))/2}, \;\;\;\; k_2= \sup_{\qv \in Q} \sqrt{\sigma_{\max} (\Mm(\qv))/2}.
 \end{equation}
-The linear class-$\mathcal{K}$ function $\iota$ can also be defined as $\iota(||\dv||_\infty)=\frac{||\dv||_\infty}{2k_1}$. With the reported controller the parameters to be selected during control design are $\alpha$ and $\Km_D$. Now it can be shown that the controller satisfies the required stability properties.
+The linear class-$\mathcal{K}$ function $\iota$ can also be defined as $\iota(||\dv||_\infty)=||\dv||_\infty/{2k_1}$. With the reported controller, the parameters to be selected during control design are $\alpha$ and $\Km_{\!D}$. Now it can be shown that the controller satisfies the required stability properties.
 \begin{theorem}
     Consider the system (\ref{eq:dynamic model}), the Lyapunov function $V$ (\ref{eq:lyapunov candidate}), the constant $\lambda$ given by (\ref{eq:lambda}) and $\dot{\ev} \neq 0$. Then, the controller (\ref{eq:mf controller}) satisfies the ISS condition (\ref{eq:controller condition disturbance}) with respect to $\dv = -\Mm(\qv)\ddot{\qv}_s-\Cm(\qv,\dot{\qv})\dot{\qv}_s-\Gm(\qv)$.
 \end{theorem}
 \begin{proof}
-    To prove this theorem, firstly,  $V$, from (\ref{eq:lyapunov candidate}), can be differentiated, leading to:
-    \begin{equation}
-        \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) = \frac{1}{2 V(\qv,\dot{\ev})} \left( \frac{1}{2}\dot{\ev}^T \dot{\Mm}(\qv) \dot{\ev}+\dot{\ev}^T \Mm(\qv) \ddot{\ev} \right).
+    To prove this theorem, firstly,  $V$ from (\ref{eq:lyapunov candidate}) can be differentiated, leading to:
+    \begin{equation}\label{eq:diffv}
+        \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) = \frac{1}{2 V(\qv,\dot{\ev})} \left( \frac{1}{2}\dot{\ev}^T \dot{\Mm}(\qv, \dqv) \dot{\ev}+\dot{\ev}^T \Mm(\qv) \ddot{\ev} \right).
     \end{equation}
     Looking at the dynamic model (\ref{eq:dynamic model}) and by definition of the error $\dot{\ev}$ we obtain:
-    \begin{equation}
-     \Mm(\qv)\ddot{\ev}=-\Cm(\qv,\dot{\qv})\dot{\ev}-\Mm(\qv)\ddot{\qv}_s-\Cm(\qv,\dot{\qv})\dot{\qv}_s-\Gm(\qv)\uv+\Bm\uv     
+    \begin{equation}\label{eq:mdde}
+     \Mm(\qv)\ddot{\ev}=-\Cm(\qv,\dot{\qv})\dot{\ev}-\Cm(\qv,\dot{\qv})\dot{\qv}_s-\Gm(\qv)+\Bm\uv-\Mm(\qv)\ddot{\qv}_s     
     \end{equation}
-    For the considered controller, (\ref{eq:mf controller}), this leads to:
+    For the considered controller (\ref{eq:mf controller}), substituting \eqref{eq:mdde} into \eqref{eq:diffv} leads to:
     \begin{equation} \label{eq:V dot}
-        \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) = \frac{-\dot{\ev}^T \Km \dot{\ev} + \dot{\ev}^T \dv}{2 V(\qv,\dot{\ev})},
+        \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) = \frac{-\dot{\ev}^T \Km \dot{\ev} + \dot{\ev}^T \dv}{2 V(\qv,\dot{\ev})}=\frac{-\dot{\ev}^T \Km \dot{\ev}}{2 V(\qv,\dot{\ev})}+\frac{\dot{\ev}^T\dv}{2 V(\qv,\dot{\ev})},
     \end{equation}
-    where the term $\dot{\ev}^T(\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv}))\dot{\ev}$ is dropped since $\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv})$ is \\skew-symmetric. Based on (\ref{eq:V dot}) now it can be shown that (\ref{eq:controller condition disturbance}) holds. Since (\ref{eq:lambda}) implies that $\dot{\ev}^T \Km\dot{\ev}-\lambda \dot{\ev}^T \Mm(\qv) \dot{\ev} \geq 0$ the definition (\ref{eq:lyapunov candidate}) of $V$ leads to:
+    where the term $\dot{\ev}^T(\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv}))\dot{\ev}$ is dropped since $\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv})$ is skew-symmetric. 
+    % Based on (\ref{eq:V dot}) now it can be shown that (\ref{eq:controller condition disturbance}) holds. 
+    Since (\ref{eq:lambda}) implies that $\dot{\ev}^T \Km\dot{\ev}-\lambda \dot{\ev}^T \Mm(\qv) \dot{\ev} \geq 0$ the definition (\ref{eq:lyapunov candidate}) of $V$ leads to:
     \begin{equation} \label{eq:th2}
         \frac{-\dot{\ev}^T \Km\dot{\ev}}{2V(\qv,\dot{\ev})}\leq -\lambda V(\qv,\dot{\ev}),  
     \end{equation}
