@@ -1,12 +1,16 @@
-\section{An example : The Double Integrator}
-Consider a double integrator system with unit mass in two dimension : 
+\section{Simulations}
+We have conducted MATLAB simulations using Simulink to compare the performance of the model-free with classical approaches under different modeling inaccuracies, while holding the other robot parameters constant. Eventually we have also carried out trials in which the required theorem assumptions on the dynamics were not fully satisfied, to evaluate the model-free approach.
+
+\subsection{Double Integrator}
+As the simplest instantiation of \eqref{eq:dynamic model}, let us consider a double integrator with dynamic model: 
 \begin{equation}
-    \ddot{\qv} = \uv
+    \Mm\ddot{\qv} = \Bm\uv
 \end{equation}
 where $\qv \in \mathbb{R}^2$ represents the planar position of the robot and $\uv \in \mathbb{R}^2$, the torque commands.
 %A possible unsafe tracking controller which allows the robot to go from $\qv_{start}$ to $\qv_{goal}$ without taking into account the obstacles is given by :
 We are going to solve the problem of navigating the system from $\qv_{start}$ to $\qv_{goal}$ while avoiding obstacles, firstly,  in a model-free fashion and, then, in the classical full-model based approach.
-We work with multiple obstacles with  different radii but  there will be considered  the closest one at each time.\\ \\
+We work with multiple obstacles with  different dimensions.
+\subsubsection{Model-free}
 \textbf{Model-free Approach}:
 A solution which allows to navigate the system from $\qv_{start}$ to $\qv_{goal}$ without taking into account the obstacles consists in realizing the desired velocity $\dot{\qv}_{goal}$:   
 \begin{equation}
@@ -26,3 +30,4 @@ Then, by defining $\xv = \dot{\qv}, \xv_{safe}=\dot{\qv}_{safe}$, the safe veloc
 \textbf{Remark 2.} The condition for safety consists in picking a small enough $\alpha$-value (e.g $0.1$,$0.2$).
 
 \includegraphics[scale=0.65]{figprint.eps}\\
+\subsection{Unicycle}
