@@ -31,7 +31,7 @@ where $\xv\in X\subseteq \mathbb{R}^n$ is the state, $\uv\in U \subseteq \mathbb
 %We also assume that $x^* = 0$ is an equilibrium of \eqref{eq:system} and X is an open and connected neighborhood of $x^*$.
 %We say that a continuous function $f: [0,b) \rightarrow \mathbb{R}_{\geq 0}, where $b \in \mathbb{R}_{\geq 0}$ (or $f: (a,b) \rightarrow R$, where $a,b \in R^+$) is of class-K (or extended class-K) if it is strictly monotonically increasing and $f(0) = 0$. need for dist
 \subsection{Control Lyapunov Functions}
-In Lyapunov theory, stabilizing \eqref{eq:system} to a point $\xv^*=\zerov$ (assuming 
+In Lyapunov theory, stabilizing \eqref{eq:system} to a point $\xv^*=\zerov$ (assuming w.l.o.g.
 $\xv^*$ is an equilibrium of \eqref{eq:system} and 
 $X$ is an open and connected neighborhood of $\xv^*$) can be achieved by finding a feedback control law $\uv=\kv(\xv)$ that drives a positive definite function, $V: D \subset \mathbb{R}^n \to \mathbb{R}_{\geq 0}$, to zero. That is, if:
 \begin{equation}
@@ -44,7 +44,7 @@ where
 \label{eq:vdot}
 \end{equation}
 Note: $\gamma : \mathbb{R}_{\geq 0} \to \mathbb{R}_{\geq 0} $ is a class-$\mathcal{K}$ function here, 
-recalling that a continuous function $\zeta : [0, b) \to \mathbb{R}_{\geq 0},~b \in \mathbb{R}_{\geq 0}$ is of class-$\mathcal{K}$ (or $\zeta : [-a, b) \to \mathbb{R}_{\geq 0},~a,b \in \mathbb{R}_{\geq 0}$ is of extended class-$\mathcal{K}$) if it is strictly monotonically increasing and $\zeta(0) = 0$. We say to have an extended class-$\mathcal{K}_\infty$ if a,b can be equal to $\infty$.
+recalling that a continuous function $\zeta : [0, b) \to \mathbb{R}_{\geq 0},~b \in \mathbb{R}_{\geq 0}$ is of class-$\mathcal{K}$ (or $\zeta : [-a, b) \to \mathbb{R}_{\geq 0},~a,b \in \mathbb{R}_{\geq 0}$ is of extended class-$\mathcal{K}$) if it is strictly monotonically increasing and $\zeta(0) = 0$. We say to have an extended class-$\mathcal{K}_\infty$ if $(a,b) = (-\infty, \infty) = \mathbb{R}$, the entire real line.
 \begin{theorem}\label{th:clft}
 If $V$ is a control Lyapunov function (CLF) for \eqref{eq:system}, i.e. a positive definite function satisfing \eqref{eq:condition}, then any Lipschitz continuous feedback controller $\uv(\xv$) satisfying $\dot{V}(\xv,\uv) \leq -\gamma(V(\xv))~\forall \xv\in X$ asymptotically stabilizes the system to $\xv^*$.
 \end{theorem}
@@ -104,34 +104,36 @@ L_{\fv}h(\xv) + L_{\gv}h(\xv)\uv]
 \dot{h}(\xv,\kv(\xv))\geq -\alpha h(\xv)
 \label{cond:2}
 \end{equation}
-$\forall{\xv}\in\mathcal{S}$ renders \eqref{eq:system} safe with respect to $\mathcal{S}$. Additionally, the set $\mathcal{S}$ is asymptotically stable in $X$, hence with the beneficial of drive the system back to the set $\mathcal{S}$ in case of noise or modelling errors.
+$\forall{\xv}\in\mathcal{S}$ renders \eqref{eq:system} safe with respect to $\mathcal{S}$. Additionally, the set $\mathcal{S}$ is asymptotically stable in $X$, hence with the beneficial of drive the system back to the set $\mathcal{S}$ in case of noise or modeling errors.
 \end{theorem}
 \end{definition}
 \noindent
-Generically for these results $\alpha$ may be taken as an extended class-$\mathcal{K}_{\infty}$ function $\alpha(\cdot)$ of $h$.
-It interesting to point out that CLFs yield invariant level sets as well. If these level sets are contained in the safe set, one can guarantee safety, however they are overly strong and conservative. On the other hand the action of CBFs can be modulated by $\alpha(\cdot)$ depending on whether a more conservative or aggressive behavior is desired, while allowing the state to evolve freely within the safe set $\mathcal{S}$. Ideally, as $\alpha \to \infty$, the CBF would activate only on the boundary of the set.
+Generically for these results $\alpha h(\xv)$ may be taken as any extended class-$\mathcal{K}_{\infty}$ function $\alpha(\cdot)$ of $h$.
+It interesting to point out that CLFs yield invariant level sets as well. If these level sets are contained in the safe set one can guarantee safety, however clearly they are overly strong and conservative. On the other hand, the action of CBFs can be modulated by $\alpha(\cdot)$ depending on whether a more conservative or aggressive behavior is desired, while allowing the state to evolve freely within the safe set $\mathcal{S}$. Ideally, as $\alpha \to \infty$, the CBF would activate only on the boundary of the set.
 
 
 \subsubsection{Control synthesis}
 Theorem \ref{th:cbf} establishes safety-critical controller 
 synthesis by means of condition (\ref{cond:2}). However, satisfying  it may require a complex analytic procedure. A minimally invasive strategy to obtain this result is to set up an optimization-based control problem whose objectives is to minimize the difference between the desired, possibly unsafe controller $\kv_d(\xv)$ and the actuated one $\uv$, so as to satisfy the CBF constraint:
-\begin{equation}
+\begin{equation}\label{eq:optprob}
 \begin{aligned}
 \kv(\xv)=\underset{\uv\in U}{\arg\min}  &(\uv-\kv_d(\xv))^T(\uv-\kv_d(\xv)), \\ 
 \mathrm{s.t.}\,\, &\dot{h}(\xv,\uv)\geq -\alpha h(\xv).
 \end{aligned}
 \end{equation}
-Additional requirements can be imposed, such as keeping the input within specific limits, and it can be shown that the controller obtained through this method is Lipschitz continuous.
+Additional requirements can be imposed and it can be shown that the controller obtained through this method is Lipschitz continuous.
 \subsection{Effect of disturbances}
-In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with these disturbances, the notion of exponential \textit{input-to-state stability} (ISS) is of paramount importance. This notion comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Le^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$; where $||\cdot||_\infty$  is the maximum norm.
-Since $\beta>0$, solutions converge to a neighborhood of the origin which depends on the size of the disturbance. Exponential ISS is achieved by requiring that : 
+In reality, all robotics systems are typically subject to unknown disturbances that may affect and so compromise the stability and safety properties. For instance, a bounded disturbance $\dv\in\mathbb{R}^m$ added to the input $\uv$ leads to the system $\dot{\xv} = \fv(\xv)+\gv(\xv)(\uv+\dv)$. To deal with these disturbances, the notion of exponential \textit{input-to-state stability} (ISS) is of paramount importance. It comes by extending the definition of exponential stability by requiring the existency of a class-$\mathcal{K}$ function $\mu$ such that if $||\xv_0||  \leq a \Rightarrow  ||\xv(t)||\leq Le^{-\beta t}||\xv_0||+ \mu(||\dv||_\infty ),\, \forall t \geq 0$; where $||\cdot||_\infty$  is the maximum norm.
+Since $\beta>0$, solutions converge to a neighborhood of the origin which depends on the size of the disturbance. Exponential ISS is achieved by requiring that: 
 \begin{equation}\label{eq:iss}
 \dot{V}(\xv,\uv,\dv) \leq -\lambda V(\xv)+\iota( ||\dv||_\infty)
-\end{equation} for some class-$\mathcal{K}$ function $\iota$. Similarly, safety can be extended to \textit{input-to-state safety} (ISSf) by requiring that the system stays within a neighbourhood $\mathcal{S}_d \supseteq  \mathcal{S}$ of the safe set $\mathcal{S}$ which clearly depends on the entity of the disturbance, i.e. $\xv_0 \in \mathcal{S}_d \Rightarrow \xv(t) \in \mathcal{S}_d, \forall t\geq 0$. This neighbourhood is defined as a 0-superlevel set: 
+\end{equation} for some class-$\mathcal{K}$ function $\iota$. Similarly, safety can be extended to \textit{input-to-state safety} (ISSf) by requiring that the system stays within a neighbourhood $\mathcal{S}_d \supseteq  \mathcal{S}$ of the safe set $\mathcal{S}$, which clearly depends on the entity of the disturbance.
+% , i.e. $\xv_0 \in \mathcal{S}_d \Rightarrow \xv(t) \in \mathcal{S}_d, \forall t\geq 0$. 
+This neighbourhood is defined as a 0-superlevel set: 
 \begin{equation}
     S_d = \{\xv \in X: h(\xv) + \gamma(||\dv||_\infty)\geq 0\}
 \end{equation}
-with some class-$\mathcal{K}$ function $\gamma$. Then ISSf is guaranteed by imposing in Theorem \ref{th:cbf}: 
+with some class-$\mathcal{K}$ function $\gamma$. ISSf is guaranteed by imposing over \eqref{cond:2} in Theorem \ref{th:cbf}: 
 \begin{equation}
     \dot{h}(\xv,\uv,\dv)\geq -\alpha h(\xv) - \iota(||\dv||_\infty).
 \end{equation}
