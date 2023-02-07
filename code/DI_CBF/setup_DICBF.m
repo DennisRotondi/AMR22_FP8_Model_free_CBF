@@ -21,8 +21,8 @@ MAP = "map_2";
 % the function creates an 4xn matrix where n is the numer of the obstacles,
 % the first two rows are the center, then radious and clearance
 obstacles = setup_environment(MAP);
-%% control parameters
-qg = [4, -1];                % desired position
+%% control parameters  
+qg = [4, -1];               % desired position
 alpha = 0.2;                % barrier certificate param 
 Kp = 0.2;                   % proportional term
 Kd = 1;                     % derivative term 
