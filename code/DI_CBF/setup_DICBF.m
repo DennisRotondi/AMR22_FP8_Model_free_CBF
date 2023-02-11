@@ -15,21 +15,22 @@ M = 1*eye(2);               % true inertia matrix
 robot_radius = 0;           % radius of the robot 
 a = 0;                      % displacement wrt robot center
 %% simulation stuff
-simTime = 100;              % simulation time
+simTime = 40;               % simulation time
 M2 = M;                     % estimated inertia matrix ( may be different from original)
-MAP = "map_3";
+MAP = "map_2";
 % the function creates an 4xn matrix where n is the numer of the obstacles,
 % the first two rows are the center, then radious and clearance
 obstacles = setup_environment(MAP);
 [~, num_obs] = size(obstacles);
 %% control parameters  
-qg = [5, -1];               % desired position
-alpha = 0.2;                % barrier certificate param 
+qg = [4, -1];               % desired position
+alpha = 1.1;                  % barrier certificate param 
+threshold_skip = 0.1;       % hysteresis mechanism
 Kp = 0.2;                   % proportional term
 Kd = 1;                     % derivative term 
 mu = 0.8;                   % cbf velocity weight
 %% run simulation
-out = sim('simulation_DICBF');
+out = sim('simulation_DICBF_');
 % import simData from simulink
 time = out.cbf.Time;
 q1 = out.configuration_vector.Data(:,1);
@@ -46,7 +47,7 @@ safe_input_norm =  out.safe_u_norm.Data;
 %% plots
 [fig1, colours] = plot_map(obstacles);
 plot_trajectory(q1,q2,qstart,qg);
-fig2 = plot_cbf(cbf,time, true, colours);
+fig2 = plot_cbf(cbf,time);
 fig3 = plot_evolution(q1,q2,qg,time);
 signals = {desired_input_norm, safe_input_norm};
 name = "Torque signals";
