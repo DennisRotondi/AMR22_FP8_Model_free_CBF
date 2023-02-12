@@ -232,6 +232,26 @@
 \newcommand{\Jgm}{\Jm_{g}}
 \newcommand{\Jhm}{\Jm_{h}}
 
+
+
+\newcommand{\plottwofigures}[8]{
+\begin{figure}[H]
+  \begin{subfigure}[t]{#4\textwidth}
+    \centering
+\includegraphics[width=\linewidth]{#1}
+    \caption{#2}
+      \label{#3}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{#8\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{#5}
+    \caption{#6}
+     \label{#7}
+  \end{subfigure}
+\end{figure}
+}
+
 %etc.
 
 %%%%% end %%%%%%%

@@ -1,21 +1,49 @@
-\section{Model Free Safety-Critical Control}
+\section{Model Free Safety-Critical Control}\label{sec:mfcbf}
 The work in \cite{mfcbf} proposes an approach in which a safe velocity is designed based on reduced-order kinematics, and then it is tracked by a velocity tracking controller that may be model aware.
 %%% add image robot scheme figure 1
 Once velocity tracking is established, enforcing safety does not require further consideration of the high-fidelity model, and this is referred to as \textit{model-free safety-critical control}.
 Consider now a robotic system with configuration space $Q$
 % \subseteq \mathbb{R}^n$,
 of dimension $n$ and 
-generalized coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics:
+generalized coordinates $\qv \in Q$, set of admissible inputs $U\subseteq \mathbb{R}^m$, control input $\uv \in U$, and dynamics
 \begin{equation} \label{eq:dynamic model}
     \Mm(\qv)\ddot{\qv}+\Cm(\qv,\dot{\qv})\dot{\qv}+\Gm(\qv)=\Bm\uv,
 \end{equation}
-where $\Mm(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $\Cm(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ collects centrifugal and Coriolis forces, $\Gm(\qv) \in\mathbb{R}^{n}$ is the gravity term, and $\Bm\in\mathbb{R}^{n \times m}$ is the input matrix. The fact that the matrix $\Bm$ is constant is by choice since the following results are limited to robots with $\Bm$ constant and no kinematic constraints. In Section \ref{sec:simulation}, this method is tested on a unicycle to investigate its characteristics when the dynamic model's conditions are not followed. As shown in \cite{robbook} it's not hard to put \eqref{eq:dynamic model} into \eqref{eq:system} using a change of coordinates $\xv = (\qv, \dqv)^T$ keeping valid all the previous results, we'll rewrite few of them to highlight the model-free aspect.
+where $\Mm(\qv)\in\mathbb{R}^{n \times n}$ is the inertia matrix, $\Cm(\qv,\dot{\qv})\in\mathbb{R}^{n \times n}$ collects centrifugal and Coriolis forces, $\Gm(\qv) \in\mathbb{R}^{n}$ is the gravity term, and $\Bm\in\mathbb{R}^{n \times m}$ is the input matrix. 
+The presence of a constant matrix $\Bm$ and the absence of constraints do not significantly hinder this approach, as it is, for many cases of interest, possible to employ the reduced dynamic model that allows for a constant $\Bm$ to demonstrate the results in this section.
+%The fact that the matrix $\Bm$ is constant and there are no constraints does not limit too much this approach since, in many cases of interest, it is possible to use the reduced dynamic model to prove the results in this section.
+%by considering the generalized velocities of many robots we obtain a dynamic model in which the constraints disappear and the $\Bm$ matrix becomes the identity. 
+For example, the unicycle ($n=3,~m=2$) dynamic model can be written as 
+\begin{align} \label{eq:uni_dyn}
+    \Mm\ddqv = &\Bm(\qv) \uv + \Am(\qv) \lambda, \\
+    &~\Am^T(\qv) \dqv = 0,
+\end{align}
+where $\lambda \in \mathbb{R}$ represents the \textit{Lagrangian multiplier} and $\Am(\qv)$ is the transpose of the row vector characterizing the kinematic constraint. The kinematic model is
+\begin{equation} \label{eq:dq_uni}
+    \dot{\qv} = \Hm(\qv)\vv ,
+\end{equation}
+%\begin{equation}
+%    \ddqv= \Hm(\qv)\vv ,
+%    \label{math:v_const}
+%\end{equation}
+where the columns of $\Hm(\qv)$ are a basis for the null space of $\Am^T(\qv)$ i.e.  $\Am^T(\qv)\Hm(\qv)=\zerov$. 
+From the time derivative of \eqref{eq:dq_uni}, and by left multiplying \eqref{eq:uni_dyn} for $\Hm(\qv)^T$ we obtain
+\begin{equation}\label{eq:uni_dynamic}
+    \Mm' \dot{\vv} = \boldsymbol{I}_2\uv,
+\end{equation}
+with $\Mm' = \Hm^T(\qv) \Mm \Hm(\qv)$. As expected the $\Bm$ matrix is now the identity and the kinematic constraints no longer need to be considered in the dynamics.
+%Note that, in the case of tracking the generalized safe velocities, the $\lambdav$ vector is zero since the velocities satisfy \eqref{math:v_const}. 
+%Note that, the parameter $\lambdav$, in the case of tracking the generalized safe velocities, as a result of the optimization program, is zero, since they satisfy  (\ref{math:v_const}).
+%In Section \ref{sec:simulation}, this method is tested on a unicycle to investigate its characteristics when the dynamic model's conditions are not followed. As shown in \cite{robbook} it's not hard to put \eqref{eq:dynamic model} into \eqref{eq:system} using a change of coordinates $\xv = (\qv, \dqv)^T$ keeping valid all the previous results, we'll rewrite few of them to highlight the model-free aspect.
+It's not hard to put \eqref{eq:dynamic model} into \eqref{eq:system} using a change of coordinates $\xv = (\qv, \dqv)^T$ keeping valid all the previous results. few of them will be rewritten to highlight the model-free aspect.
+
 \subsection{Model Free Control Barrier Functions}
-We now show from where the proposed model-free approach comes from, including the needed assumptions. Let us consider the control law $ \kv:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m,~\uv=\kv(\qv,\dqv)$, initial conditions $\qv(0) = \qv_0,~\dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists fot all $t \geq 0$. 
+We will now trace the origins of the proposed model-free approach and outline the required assumptions.
+Let us consider the control law $ \kv:Q\times \mathbb{R}^n \rightarrow \mathbb{R}^m,~\uv=\kv(\qv,\dqv)$, initial conditions $\qv(0) = \qv_0,~\dot{\qv}(0)=\dot{\qv}_0$ and assume that a unique solution $\qv(t)$ exists for all $t \geq 0$. 
 % A robotic system is considered safe if its configuration $\qv$ belongs to the safe set $\mathcal{S}$ for all times $t\geq 0$.
 %We need the following assumptions on the safe set to be satisfied:\\
 \\
-\textbf{Assumption 1}. The safe set is defined as the 0-superlevel set of a continuously differentiable function $h: Q \rightarrow \mathbb{R}$:
+\textbf{Assumption 1}. The safe set is defined as the 0-superlevel set of a continuously differentiable function $h: Q \rightarrow \mathbb{R}$
 \begin{equation} \label{eq:safe set}
     \mathcal{S} = \{\qv \in Q: h(\qv)\geq 0 \},
 \end{equation}
@@ -41,9 +69,9 @@ for some $k_1,k_2\in \mathbb{R}_{>0}$ such that $\forall(\qv,\dot{\ev},\dot{\qv}
     \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) \leq -\lambda V(\qv,\dot{\ev}).
 \end{equation}
 %proves that tracking the safe velocity achieves safety for the full dynamics if the parameter $\alpha$ is chosen small enough. 
-In particular, for a tracking controller satisfying the previous assumption, stability translates into safety for the dynamic system (\ref{eq:dynamic model}) if $\lambda > \alpha$. This leads to:
+In particular, for a tracking controller satisfying the previous assumption, stability translates into safety for the dynamic system (\ref{eq:dynamic model}) if $\lambda > \alpha$, thanks to:
 \begin{theorem}\label{th:alpha limit}
-    Consider system (\ref{eq:dynamic model}), safe set $\mathcal{S}$ (\ref{eq:safe set}), and velocity tracking controller satisfying (\ref{eq:controller condition}). If $\lambda > \alpha$, safety is achieved such that $(\qv_0,\dot{\ev}_0)\in \mathcal{S}_V \Rightarrow \qv(t) \in \mathcal{S}, \forall t\geq 0$, where:
+    Consider system (\ref{eq:dynamic model}), safe set $\mathcal{S}$ (\ref{eq:safe set}), and velocity tracking controller satisfying (\ref{eq:controller condition}). If $\lambda > \alpha$, safety is achieved such that $(\qv_0,\dot{\ev}_0)\in \mathcal{S}_V \Rightarrow \qv(t) \in \mathcal{S}, \forall t\geq 0$, where
     \begin{align}
         &\mathcal{S}_V = \{ (\qv,\dot{\ev})\in Q \times \mathbb{R}^n: h_V(\qv,\dot{\ev})\geq 0 \},\\
         &h_V(\qv,\dot{\ev}) = -V(\qv,\dot{\ev})+ \alpha_e h(\qv), \label{eq:h_V}
@@ -51,7 +79,7 @@ In particular, for a tracking controller satisfying the previous assumption, sta
     with $\alpha_e = (\lambda - \alpha)k_1/C_h > 0$ and $C_h,k_1$ defined at (\ref{eq:safe set}) and (\ref{eq:lyapunov condition}).
 \end{theorem}
 \begin{proof}
-    Since $V(\qv,\dot{\ev}) \geq 0$, the implication $h_V(\qv,\dot{\ev}) \geq 0 \rightarrow h(\qv) \geq 0$ holds. Thus it is sufficient to show that $h_V(\qv,\dot{\ev}) \geq 0$ to prove the theorem. By definition of the initial conditions $h_V(\qv_0,\dot{\ev}_0) \geq 0$ and its time derivative:
+    Since $V(\qv,\dot{\ev}) \geq 0$, the implication $h_V(\qv,\dot{\ev}) \geq 0 \rightarrow h(\qv) \geq 0$ holds. Thus it is sufficient to show that $h_V(\qv,\dot{\ev}) \geq 0$ to prove the theorem. By definition of the initial conditions $h_V(\qv_0,\dot{\ev}_0) \geq 0$ and its time derivative
     \begin{equation*}
         \begin{split}
             \dot{h}_V&(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) = -\dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv) + \alpha_e \nabla h(\qv)\cdot\dot{\qv} \\
@@ -65,8 +93,8 @@ In particular, for a tracking controller satisfying the previous assumption, sta
     where in the second line was used (\ref{eq:controller condition}) and definition \eqref{eq:error}. The next two inequalities follows from (\ref{eq:safety constraint}) and then from (\ref{eq:h_V}) together with the Cauchy-Schwarts inequality. For the second to last line the lower and upper bounds (\ref{eq:lyapunov condition}) and (\ref{eq:safe set}) were used. Lastly the definition for $\alpha_e$ from this theorem guarantees $h_V(\qv(t),\dot{\ev}(t)) \geq 0, \forall t \geq 0$ for the safety property ensured by Theorem \ref{th:cbf}.
 \end{proof}
 \noindent
-The parameter $\lambda$ depends on how well/fast the actual robot is able to track the safe velocities commands coming from the unicycle model. However, if the robot is able to exponentially track those safe velocities, then, such parameter exists, and therefore there exixts an $\alpha$ parameter such that $\alpha <\lambda$ and safety is achieved. This parameter may not be known in practice and it serves more as a tool for the theoretical proof of safety.\\ 
-\subsection{Importance of disturbances}
+The parameter $\lambda$ depends on how well/fast the actual robot is able to track the safe velocities commands coming from the reduced model. However, if the robot is able to exponentially track these velocities, then, such parameter exists, and therefore there exixts an $\alpha <\lambda$ and safety is achieved. This parameter may not be known in practice.\\ 
+\subsection{Importance of disturbances}\label{subsec:iod}
 Now consider that ideal exponential tracking of the safe velocity is not possible. This is often the case when velocity tracking is done in a model free frashion or when $\dqv_s$ is generated without taking into account the dynamics. To mitigate this problem a bounded input disturbance $\dv$ can be considered to capture the effects of modeling errors. When the input disturbance is introduced instead of safety one shall guarantee ISSf which is the invariance of the larger set $S_d \supseteq S$:
 \begin{equation} \label{eq:s d}
     \begin{split}
@@ -82,8 +110,8 @@ The dynamic extension of set $S_d$, $S_{Vd}\supseteq S_{V}$ can be written as:
         &h_{Vd}(\qv,\dot{\ev}) = h_V(\qv,\dot{\ev})+\gamma(||\dv||_\infty).
     \end{split}
 \end{equation}
-Theorem \ref{th:issf} shows that ISSf is guaranteed by ISS tracking. %$||\dot{\ev}(t)|| \leq M ||\dot{\ev}_0|| e^{-\lambda t}+\mu(||\dv||_\infty)$. 
-As already shown in \eqref{eq:iss}, for ISS instead of (\ref{eq:controller condition}) the tracking controller satisfies
+Theorem \ref{th:issf} shows that ISSf is guaranteed by exponential ISS tracking. %$||\dot{\ev}(t)|| \leq M ||\dot{\ev}_0|| e^{-\lambda t}+\mu(||\dv||_\infty)$. 
+As already shown in \eqref{eq:iss}, for exponential ISS instead of (\ref{eq:controller condition}) the tracking controller satisfies
 \begin{equation} \label{eq:controller condition disturbance}
     \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) \leq -\lambda V(\qv,\dot{\ev}) + \iota(||\dv||_{\infty}).
 \end{equation}
@@ -91,7 +119,7 @@ As already shown in \eqref{eq:iss}, for ISS instead of (\ref{eq:controller condi
     Consider system (\ref{eq:dynamic model}), sets $S_d$ and $S_{Vd}$, in (\ref{eq:s d}) and (\ref{eq:s vd}), safe velocity satisfying (\ref{eq:safety constraint}), and velocity tracking controller satisfying (\ref{eq:controller condition disturbance}). If $\lambda > \alpha$, ISSf is achieved such that $(\qv_0,\dot{\ev}_0) \in S_{Vd} \rightarrow \qv(t) \in S_d, \forall t \geq 0$, where $\alpha_e$ is given in Theorem \ref{th:alpha limit} and $\gamma(||\dv||_\infty)=\iota(||\dv||_\infty)/\alpha$.
 \end{theorem}
 \noindent
-The proof follows the same steps as in Theorem \ref{th:alpha limit}, by replacing $h$ and $h_V$ with $h_d$ and $h_{Vd}$. It implies that ISS tracking of a safe velocity translate to ISSf for the full system.
+The proof follows the same steps as in Theorem \ref{th:alpha limit}, by replacing $h$ and $h_V$ with $h_d$ and $h_{Vd}$. It implies that exponential ISS tracking of a safe velocity translates to ISSf for the full system.
 \subsubsection{Velocity Controller Example}
 % We can now show a velocity tracking controller that provides ISS by (\ref{eq:controller condition disturbance}). 
 As the simplest choice for a velocity tracking controller that provides ISS by (\ref{eq:controller condition disturbance}), it is possible to take a model-free controller:
@@ -115,25 +143,25 @@ The linear class-$\mathcal{K}$ function $\iota$ can also be defined as $\iota(||
     Consider the system (\ref{eq:dynamic model}), the Lyapunov function $V$ (\ref{eq:lyapunov candidate}), the constant $\lambda$ given by (\ref{eq:lambda}) and $\dot{\ev} \neq 0$. Then, the controller (\ref{eq:mf controller}) satisfies the ISS condition (\ref{eq:controller condition disturbance}) with respect to $\dv = -\Mm(\qv)\ddot{\qv}_s-\Cm(\qv,\dot{\qv})\dot{\qv}_s-\Gm(\qv)$.
 \end{theorem}
 \begin{proof}
-    To prove this theorem, firstly,  $V$ from (\ref{eq:lyapunov candidate}) can be differentiated, leading to:
+    To prove this theorem, firstly,  $V$ from (\ref{eq:lyapunov candidate}) can be differentiated leading to
     \begin{equation}\label{eq:diffv}
         \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) = \frac{1}{2 V(\qv,\dot{\ev})} \left( \frac{1}{2}\dot{\ev}^T \dot{\Mm}(\qv, \dqv) \dot{\ev}+\dot{\ev}^T \Mm(\qv) \ddot{\ev} \right).
     \end{equation}
-    Looking at the dynamic model (\ref{eq:dynamic model}) and by definition of the error $\dot{\ev}$ we obtain:
+    Looking at the dynamic model (\ref{eq:dynamic model}) and by definition of the error $\dot{\ev}$ we obtain
     \begin{equation}\label{eq:mdde}
-     \Mm(\qv)\ddot{\ev}=-\Cm(\qv,\dot{\qv})\dot{\ev}-\Cm(\qv,\dot{\qv})\dot{\qv}_s-\Gm(\qv)+\Bm\uv-\Mm(\qv)\ddot{\qv}_s     
+     \Mm(\qv)\ddot{\ev}=-\Cm(\qv,\dot{\qv})\dot{\ev}-\Cm(\qv,\dot{\qv})\dot{\qv}_s-\Gm(\qv)+\Bm\uv-\Mm(\qv)\ddot{\qv}_s.
     \end{equation}
-    For the considered controller (\ref{eq:mf controller}), substituting \eqref{eq:mdde} into \eqref{eq:diffv} leads to:
+    For the considered controller (\ref{eq:mf controller}), substituting \eqref{eq:mdde} into \eqref{eq:diffv} leads to
     \begin{equation} \label{eq:V dot}
         \dot{V}(\qv,\dot{\ev},\dot{\qv},\ddot{\qv}_s,\uv,\dv) = \frac{-\dot{\ev}^T \Km \dot{\ev} + \dot{\ev}^T \dv}{2 V(\qv,\dot{\ev})}=\frac{-\dot{\ev}^T \Km \dot{\ev}}{2 V(\qv,\dot{\ev})}+\frac{\dot{\ev}^T\dv}{2 V(\qv,\dot{\ev})},
     \end{equation}
-    where the term $\dot{\ev}^T(\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv}))\dot{\ev}$ is dropped since $\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv})$ is skew-symmetric. 
+    where the term $\dot{\ev}^T(\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv}))\dot{\ev}$ is dropped because $\dot{\Mm}(\qv,\dot{\qv})-2\Cm(\qv,\dot{\qv})$ is skew-symmetric. 
     % Based on (\ref{eq:V dot}) now it can be shown that (\ref{eq:controller condition disturbance}) holds. 
-    Since (\ref{eq:lambda}) implies that $\dot{\ev}^T \Km\dot{\ev}-\lambda \dot{\ev}^T \Mm(\qv) \dot{\ev} \geq 0$ definition (\ref{eq:lyapunov candidate}) of $V$ leads to:
+    Since (\ref{eq:lambda}) implies that $\dot{\ev}^T \Km\dot{\ev}-\lambda \dot{\ev}^T \Mm(\qv) \dot{\ev} \geq 0$ definition (\ref{eq:lyapunov candidate}) of $V$ leads to
     \begin{equation} \label{eq:th2}
         \frac{-\dot{\ev}^T \Km\dot{\ev}}{2V(\qv,\dot{\ev})}\leq -\lambda V(\qv,\dot{\ev}),  
     \end{equation}
-    $\forall \qv \in Q, \dot{\ev} \in \mathbb{R}^n$. Furthermore, for the Cauchy-Schwartz inequality, the bound (\ref{eq:lyapunov condition}) on $V$ and the definition of $\iota$ yield:
+    $\forall \qv \in Q, \dot{\ev} \in \mathbb{R}^n$. Furthermore, for the Cauchy-Schwartz inequality, the bound (\ref{eq:lyapunov condition}) on $V$ and the definition of $\iota$ yield
     \begin{equation} \label{eq:th3}
         \frac{\dot{\ev}^T\dv}{2V(\qv,\dot{\ev})}\leq \frac{\lVert \dot{\ev}\rVert \lVert \dv \rVert _\infty}{2k_1\lVert \dot{\ev} \rVert}=\iota(\lVert \dv \rVert _\infty),
     \end{equation}
