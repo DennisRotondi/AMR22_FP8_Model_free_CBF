@@ -46,7 +46,8 @@ q2 =  out.configuration_vector.Data(:,2);
 nominal_velocity = squeeze(out.nominal_velocity.Data);
 safe_velocity =  out.safe_velocity.Data;
 tracked_velocity = out.tracked_velocity.Data;
-
+input_norm = out.input_norm.Data;
+input = out.safe_input.Data;
 cbf = squeeze(out.cbf.Data);
 
 %% plots
@@ -57,16 +58,36 @@ else
 end
 plot_trajectory(q1,q2,qstart,qg)
 fig2 = plot_cbf(cbf,time, true, colours);
-fig3 = plot_evolution(q1,q2,qg,time);
+yline(gamma,'LineWidth',4,'Color','blue','HandleVisibility','off')
+% fig3 = plot_evolution(q1,q2,qg,time);
 
-signalsx = {safe_velocity(:,1), tracked_velocity(:,1)};
+signalsx = {safe_velocity(:,1), tracked_velocity(:,1), nominal_velocity(1,:)};
 name = "Velocity on x";
-sig_names = ["safe","actual"];
-dimension = 'velocity v, $\dot{q}$ (m/s)';
+sig_names = ["safe","actual","nominal"];
+dimension = 'velocity, $v$ (m/s)';
 fig4 = plot_comparison(signalsx, name, time, dimension, sig_names);
 
-signalsy = {safe_velocity(:,2), tracked_velocity(:,2)};
+signalsy = {safe_velocity(:,2), tracked_velocity(:,2), nominal_velocity(2,:)};
 name = "Velocity on y";
-sig_names = ["safe","actual"];
-dimension = 'angular velocity w, $\dot{q}$ (rad/s)';
+sig_names = ["safe","actual","nominal"];
+dimension = 'angular velocity, $\omega$ (rad/s)';
 fig5 = plot_comparison(signalsy, name, time, dimension, sig_names);
+%multiple input
+name = "Control effort";
+sig_names ='a';
+dimension = 'input, $u_1$ (N)';
+fig7 = plot_comparison({input(:,1)}, name, time, dimension, sig_names);
+b = gca; legend(b,'off');
+name = "Control effort2";
+sig_names ='b';
+dimension = 'input, $u_2$ (N$\cdot$m)';
+fig8 = plot_comparison({input(:,2)}, name, time, dimension, sig_names);
+b = gca; legend(b,'off');
+
+
+list_factory = fieldnames(get(groot,'factory'));
+index_interpreter = find(contains(list_factory,'Interpreter'));
+for i = 1:length(index_interpreter)
+    default_name = strrep(list_factory{index_interpreter(i)},'factory','default');
+    set(groot, default_name,'latex');
+end

@@ -44,14 +44,37 @@ velocity_norm = out.actual_velocity_norm.Data;
 desired_input_norm = out.desired_input_norm.Data;
 % input after safe optimization (actual input)
 safe_input_norm =  out.safe_u_norm.Data;
+safe_input =  out.safe_input.Data;
+desired_input = out.desired_input.Data;
 %% plots
 [fig1, colours] = plot_map(obstacles);
 plot_trajectory(q1,q2,qstart,qg);
 fig2 = plot_cbf(cbf,time);
 fig3 = plot_evolution(q1,q2,qg,time);
-signals = {desired_input_norm, safe_input_norm};
-name = "Torque signals";
-sig_names = ["desired","safe"];
-dimension = 'torque, $\| \tau \|$ (N$\cdot$ m)';
-fig4 = plot_comparison(signals, name, time, dimension, sig_names);
+
+% signals = {desired_input_norm, safe_input_norm};
+% name = "Torque signals";
+% sig_names = ["desired","safe"];
+% dimension = 'torque, $\| \tau \|$ (N$\cdot$ m)';
+% fig4 = plot_comparison(signals, name, time, dimension, sig_names);
 %fig5 = plot_comparison({second_part_cbf}, "cbf second part", time, 'meters', "$\mu(q-q_O)^T\cdot\dot{q}$");
+
+signalsx = {safe_input(:,1), desired_input(:,1)};
+name = "Control effort";
+sig_names = ["actual","nominal"];
+dimension = 'input, $u_1$ (N)';
+fig5 = plot_comparison(signalsx, name, time, dimension, sig_names);
+
+signalsy = {safe_input(:,2), desired_input(:,2)};
+name = "Control effort2";
+sig_names = ["actual","nominal"];
+dimension = 'input, $u_2$ (N)';
+fig6 = plot_comparison(signalsy, name, time, dimension, sig_names);
+
+
+list_factory = fieldnames(get(groot,'factory'));
+index_interpreter = find(contains(list_factory,'Interpreter'));
+for i = 1:length(index_interpreter)
+    default_name = strrep(list_factory{index_interpreter(i)},'factory','default');
+    set(groot, default_name,'latex');
+end
