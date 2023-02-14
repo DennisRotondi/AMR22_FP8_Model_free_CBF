@@ -18,11 +18,10 @@ For the first simulations, as the simplest instance of \eqref{eq:dynamic model},
 where $\qv \in \mathbb{R}^2$ represents the planar position of the robot, $\uv \in \mathbb{R}^2$, $\Bm=\boldsymbol{I}_{2}$ and $\Mm = \mbox{diag}\left\{m, m\right\}$ in this scenario.
 %A possible unsafe tracking controller which allows the robot to go from $\qv_{start}$ to $\qv_{goal}$ without taking into account the obstacles is given by :
 We want to solve the problem of guiding the system from an initial configuration $\qv_{start}$ to a final one $\qv_{goal}$ while avoiding circular obstacles thanks to the CBF, therefore remaining in the safe region.
-%, firstly,  in a model-free fashion and, then, in the classical full-model based approach.
 % We work with multiple obstacles with  different dimensions.
 % The first simulation 
 % \textbf{Model-free Approach}:
-\subsubsection{Model-free}
+\subsubsection{Model-free CBF}
 A solution that allows navigating from $\qv_{start}$ to $\qv_{goal}$ without taking into account the obstacles consists in realizing the nominal velocity   
 \begin{equation}
     \dot{\qv}_{nom}=-K_P(\qv - \qv_{goal}),\,K_P\in\mathbb{R}_{>0}.
@@ -70,12 +69,12 @@ As depicted in Figure~\ref{fig:sim3map}, it is clear that access to the dynamic 
 \begin{figure}[!ht]
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim2map.eps}
-    \caption{\label{fig:sim2map}Sim. 2: evolution of the state $\qv$ over the environment.}
+    \caption{\label{fig:sim2map}Simulation 2: evolution of the state $\qv$ over the environment.}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim2h.eps}
-    \caption{\label{fig:sim2h}Sim 2: evolution of $h$ with $\gamma = 0.3571\,[\mathrm{m}$] (blue line).}
+    \caption{\label{fig:sim2h}Simulation 2: evolution of $h$ with $\gamma = 0.3571\,[\mathrm{m}$] (blue line).}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
         \centering
@@ -86,7 +85,7 @@ As depicted in Figure~\ref{fig:sim3map}, it is clear that access to the dynamic 
         \centering
         \includegraphics[width=\textwidth]{figures/sim2vel2.eps}
     \end{minipage}  
-    \caption{\label{fig:sim2vel}Sim 2: Evolution of the velocity vector $\dqv$ components}
+    \caption{\label{fig:sim2vel}Simulation 2: Evolution of the velocity vector $\dqv$ components.}
     \begin{minipage}[t]{.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/sim2u1.eps}
@@ -96,7 +95,7 @@ As depicted in Figure~\ref{fig:sim3map}, it is clear that access to the dynamic 
         \centering
         \includegraphics[width=\textwidth]{figures/sim2u2.eps}
     \end{minipage} 
-    \caption{\label{fig:sim2in}Sim 2: Evolution of the input vector $\uv$ components}
+    \caption{\label{fig:sim2in}Simulation 2: Evolution of the input vector $\uv$ components.}
 \end{figure}
 \clearpage
 \newpage
@@ -104,12 +103,12 @@ As depicted in Figure~\ref{fig:sim3map}, it is clear that access to the dynamic 
 \begin{figure}[!ht]
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim3map.eps}
-    \caption{\label{fig:sim3map}Sim. 3: evolution of the state $\qv$ over the environment.}
+    \caption{\label{fig:sim3map}Simulation 3: evolution of the state $\qv$ over the environment.}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim3h.eps}
-    \caption{\label{fig:sim3h}Sim 3: evolution of $h$.\\~}
+    \caption{\label{fig:sim3h}Simulation 3: evolution of $h$.\\~}
     \end{minipage}
     \begin{minipage}[t]{.45\textwidth}
         \centering
@@ -120,7 +119,7 @@ As depicted in Figure~\ref{fig:sim3map}, it is clear that access to the dynamic 
         \centering
         \includegraphics[width=\textwidth]{figures/sim3u2.eps}
     \end{minipage}
-    \caption{\label{fig:sim3u} Sim 3: evolution of the input vector $\uv$ components}
+    \caption{\label{fig:sim3u}Simulation 3: evolution of the input vector $\uv$ components.}
 
 \end{figure}
 %add figure inputsim2 e input sim3
@@ -156,7 +155,7 @@ Here, controller \eqref{eq:mf controller} tracks the safe velocity $\vv_{safe}$ 
 %Having an higher $K_D$ to bound $\gamma$ we are able to track very well this velocity.
 %parlare di come tracka bene w visto che è piccolo Icm ma contribisce ad aumentare gamma perché l'eigenvalue di (17) è piccolo + gain aumentati per diminuire clearance
 \subsubsection{Model-based CBF}
-In the classic approach for Simulation 5, similar to the point robot, we cannot use directly \eqref{eq:ffcbf2} for each obstacle $\mathcal{O}_i$, but we need to add a term to have the relative degree equal to one. Using the same term added in \eqref{eq:difmcbf} the new CBF is:
+In the classic solution for Simulation 5, similar to the point robot, we cannot use directly \eqref{eq:ffcbf2} for each obstacle $\mathcal{O}_i$, but we need to add a term to have the relative degree equal to one. Using the same term added in \eqref{eq:difmcbf} the new CBF is:
 \begin{equation}
    h_i(\qv,\dqv) = d_i-R_{\mathcal{O}_i}-\delta \cos(\theta - \psi_i)+\mu(\pv-\pv_\mathcal{O})^T\dpv
    \label{eq:ffcbf2}
@@ -175,21 +174,24 @@ with $\pv$ the cartesian position vector. In Simulation 5, we have generated $\u
            + \ddpv_{nom}
          \end{bmatrix},
     \end{equation}
-with  $\ddpv_{nom} = -\Km_P(\pv-\pv_{goal})-\Km_D~\dpv$. By solving the multi-CBF optimization problem for the same obstacles in Simulation 4 we produce the $\uv_{safe}$, which is given directly in input to the model. Setting $\Km_P = 0.2\cdot\boldsymbol{I}_2,$ $\Km_D = \boldsymbol{I}_2,$ $\delta = 0.2$, $\alpha = 0.8$, $\mu = 0.3$, the robot is now able to pass in between the obstacles Figure~\ref{fig:sim5map} to reach the goal since it does not need additional clearances to ensure safety.
+with  $\ddpv_{nom} = -\Km_P(\pv-\pv_{goal})-\Km_D~\dpv$. By solving the multi-CBF optimization problem for the same obstacles in Simulation 4 we produce the $\uv_{safe}$, which is given directly in input to the model. 
+Setting $\Km_P = 0.2\cdot\boldsymbol{I}_2,$ $\Km_D = \boldsymbol{I}_2,$ $\delta = 0.2$, $\alpha = 0.8$, $\mu = 0.3$, the robot is now able to pass in between the obstacles, Figure~\ref{fig:sim5map}, to reach the goal since it does not need clearances to ensure safety. 
+However, in practice, having an additional clearance for classic CBFs could be beneficial as robot parameters may not be perfectly known, introducing disturbances that can be modeled similarly to the ones discussed in the model-free section. With the aim of giving a practical example, Simulation 6 repeats the previous one using a slightly different mass $m_2$, and so moment of inertia $I_{cm2}$, to compute nominal and safe inputs, which could represent an unknown payload whose weight is not precisely estimated. While the robot can still complete this task with a
+% inputs are still different (turn more and less)
+different mass, see Figure~\ref{fig:sim6map}, navigating in a more complex environment like in Simulation 7 can cause problems when the dynamic model is inaccurate, Figure~\ref{fig:sim7map}--\ref{fig:sim7h3}. Indeed, using $m_2=3$ [kg], meaning that the model underestimates the mass of the robot, at around $5$ seconds into the simulation the unicycle turns to avoid obstacle $\mathcal{O}_3$, but, right after, when it needs to doge $\mathcal{O}_2$ the generated safe input is not strong enough and the robot collides with the obstacle.
+% input 
  % Simulation 4 
 \begin{figure}[!ht]
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim4map.eps}
-    \caption{\label{fig:sim4map}Sim. 4: evolution of the state $\qv$ over the environment.}
+    \caption{\label{fig:sim4map}Simulation 4: evolution of the state $\qv$ over the environment.}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim4h.eps}
-    \caption{\label{fig:sim4h}Sim 4: evolution of $h$ with $\gamma = 1.45\,[\mathrm{m}$] (blue line).}
-    \end{minipage}
-\end{figure}
-\begin{figure}[!ht]
-    \begin{minipage}[t]{.45\textwidth}
+    \caption{\label{fig:sim4h}Simulation 4: evolution of $h$ with $\gamma = 1.45\,[\mathrm{m}$] (blue line).}
+    \end{minipage}   
+\begin{minipage}[t]{.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/sim4v1.eps}
     \end{minipage}
@@ -198,7 +200,7 @@ with  $\ddpv_{nom} = -\Km_P(\pv-\pv_{goal})-\Km_D~\dpv$. By solving the multi-CB
         \centering
         \includegraphics[width=\textwidth]{figures/sim4v2.eps}
     \end{minipage}  
-    \caption{\label{fig:sim4v}Sim 4: Evolution of the velocity vector $\dqv$ components}
+    \caption{\label{fig:sim4v}Simulation 4: Evolution of the velocity vector $\dqv$ components.}
     
     \begin{minipage}[t]{.45\textwidth}
         \centering
@@ -209,21 +211,20 @@ with  $\ddpv_{nom} = -\Km_P(\pv-\pv_{goal})-\Km_D~\dpv$. By solving the multi-CB
         \centering
         \includegraphics[width=\textwidth]{figures/sim4u2.eps}
     \end{minipage}  
-    \caption{\label{fig:sim4u} Sim 4: Evolution of the input vector $\uv$ components}
+    \caption{\label{fig:sim4u}Simulation 4: Evolution of the input vector $\uv$ components.}
+\end{figure}
+\begin{figure}[!ht]
     % Simulation 5
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim5map.eps}
-    \caption{\label{fig:sim5map}Sim. 5: evolution of the state $\qv$ over the environment.}
+    \caption{\label{fig:sim5map}Simulation 5: evolution of the state $\qv$ over the environment.}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.46\linewidth}
     \includegraphics[width=\textwidth]{figures/sim5h.eps}
-    \caption{\label{fig:sim5h}Sim 5: evolution of $h$.\\~}
+    \caption{\label{fig:sim5h}Simulation 5: evolution of $h$.\\~}
     \end{minipage}
-\end{figure}
-\clearpage
-
-\begin{figure}[!ht]
+    
     \begin{minipage}[t]{.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/sim5u1.eps}
@@ -233,9 +234,30 @@ with  $\ddpv_{nom} = -\Km_P(\pv-\pv_{goal})-\Km_D~\dpv$. By solving the multi-CB
         \centering
         \includegraphics[width=\textwidth]{figures/sim5u2.eps}
     \end{minipage}
-    \caption{\label{fig:sim5u2} Sim 5: evolution of the input vector $\uv$ components}
+    \caption{\label{fig:sim5u2}Simulation 5: evolution of the input vector $\uv$ components.}
+    
+    \begin{minipage}[b]{0.46\linewidth}
+    \includegraphics[width=\textwidth]{figures/sim6map.eps}
+    \caption{\label{fig:sim6map}Simulation 6: trajectories for the two values of $m_2$.}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.46\linewidth}
+    \includegraphics[width=\textwidth]{figures/sim7map.eps}
+    \caption{\label{fig:sim7map}Simulation 7: trajectories for the two values of $m_2$.}
+    \end{minipage}
 \end{figure}
-
+\begin{figure}[p]
+    \begin{minipage}[b]{0.46\linewidth}
+    \includegraphics[width=\textwidth]{figures/sim7hm.eps}
+    \caption{\label{fig:sim7hm}Simulation 7: evolution of $h$ when the mass is estimated correctly.\\ }
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.46\linewidth}
+    \includegraphics[width=\textwidth]{figures/sim7h3.eps}
+    \caption{\label{fig:sim7h3}Simulation 7: evolution of $h$ when $m_2=3$ [kg]. When the robot collides with $\mathcal{O}_2$, $h_2$ becomes negative.}
+    \end{minipage}
+    \vspace{128in}
+\end{figure}
 % m=1 tutto come loro, m=15 sbanda senza "disturbo", m=15 con disturbo + 2 sim con cbf normale usando quella di venditelli
 % \begin{align}
 %     &\argmin_{\dot{\qv}_{safe} \in \mathbb{R}^2} \,\,(\dot{\qv}_{safe}-\dot{\qv}_{goal})^T(\dot{\qv}_{safe}-\dot{\qv}_{goal}) \notag\\

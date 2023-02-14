@@ -5,13 +5,20 @@
 \section*{Conclusions}
 \addcontentsline{toc}{section}{Conclusions}
 This project has enabled us to examine and evaluate one of the cutting-edge control techniques that has garnered significant attention in recent years: Control Barrier Functions. 
-With the aim of making them easier to apply, the model-free approach suggests the use of purely kinematic CBFs. This way one can implement this tool considering a much simpler robotic model and a less complex optimization problem. 
-In particular, we have used the kinematic model instead of the dynamic one but, for example, the authors of the work \cite{mfcbf} exploit the unicycle kinematic model to plan the motion of a spatial Segway and a quadruped. This approach has the limitation of needing exponential tracking of the generated velocities to guarantee safety. This can only be achieved with a model-based velocity tracker, for which the dynamic model of the robot needs to be accurately known. If one uses a simpler tracking algorithm, ensuring safety comes at the price of restricting the safe set with the use of a clearance parameter $\gamma(||\dv||_{\infty})$. 
-It would be desirable to reduce $\gamma$ as much as possible by changing the control parameters. One can easily show that, for the double integrator and the unicycle, $\gamma = ||\Mm~\dvv_s ||_{\infty} / (2\alpha\sqrt{\sigma_{\min}(\Mm)/2})$. 
+With the aim of making them easier to apply, the model-free approach suggests the use of purely kinematic CBFs so to implement a much simpler robotic model and a less complex optimization problem. 
+In particular, we have used the kinematic equations instead of the dynamic ones but, for example, the authors of \cite{mfcbf} exploit the unicycle kinematic model to plan the motion of a spatial Segway and a quadruped. This approach has the limitation of needing exponential tracking of the generated velocities
+%to guarantee safety
+that can only be achieved with a model-based velocity tracker, for which the dynamics of the robot need to be accurately known. If one uses a simpler tracking algorithm, ensuring safety comes at the price of restricting the safe set with the use of a clearance $\gamma(||\dv||_{\infty})$. 
+It would be desirable to reduce $\gamma$ as much as possible by changing the control parameters. 
+%One can easily show that, 
+For the double integrator and the unicycle $\gamma = ||\Mm~\dvv_s ||_{\infty} / (2\alpha\sqrt{\sigma_{\min}(\Mm)/2})$. 
 A way to decrease the clearance is to set $\alpha$ close to its maximum admissible value, given by $\alpha < \lambda$.
-Using high values of $\alpha$ encourages the system to get close to the boundaries of the safe region, but this is not an issue since these have been changed by the addition of the clearance. 
+High values of $\alpha$ encourages the system to get close to the boundaries of the safe region, but this is not an issue since these have been changed by the addition of the clearance. 
 %For this reason, we have found that increasing $\alpha$ is the best way to reduce the clearance. 
-If one wants to decrease the clearance further, since the mass of the robot is fixed, one would have to decrease the maximum admissible safe acceleration $\dvv_s$. 
-This can be achieved by decreasing the control gains, but that reduces $\lambda$ and subsequently $\alpha$, meaning that it is not straightforward to extend the bounds of the safe region this way.
-In conclusion, our experience with model-free CBF points towards the limited usefulness of this approach. In fact, if the dynamic model is not known exponential tracking of the velocities is not possible, and to ensure safety one needs to introduce clearances that are often quite large, and moreover should be estimated using the dynamic parameters. 
-When the dynamic model is instead known one could achieve exponential tracking of the velocities, but then the use of model-based CBFs is also possible. In this case the main advantage of model-free CBFs is that the optimization problem is less complex especially when more than one obstacle is considered at a time. Moreover, there is no need to include higher-order terms in the CBF to keep the relative degree one.
+To reduce the clearance further one could diminish the maximum admissible safe acceleration $\dvv_s$ by scaling down the control gains, but that reduces $\lambda$ and subsequently $\alpha$, meaning that it is not straightforward to extend the bounds of the safe region this way.
+In conclusion, our experience with model-free CBF points towards the limited usefulness of this approach. In fact, if the dynamic model is not known, exponential tracking of the velocities is not possible, and to ensure safety one needs to introduce clearances that are often quite large, and moreover should be estimated using the dynamic parameters. 
+When the dynamic model is instead known, one could achieve exponential tracking of the velocities, but then the use of model-based CBFs is also possible. In this case, the main advantage of model-free CBFs is that the optimization problem is less complex, especially when more than one obstacle is considered at a time and there is no need to include higher-order terms in $h$ to keep the relative degree one. Moreover, classic CBFs rely heavily on the model, and  when the system parameters are imperfectly known
+%, as often happens in practice, 
+adding a clearance
+%as in the model-free approach 
+may be necessary to ensure safety.
