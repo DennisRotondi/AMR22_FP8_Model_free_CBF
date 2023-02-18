@@ -10,5 +10,6 @@ function fig = plot_evolution(q1,q2,qg,time)
     grid on;
     set(gca,'FontSize',35);
     set(gca,'FontName',"Latin Modern Math");
+    box on
 end
 

@@ -2,7 +2,7 @@ function fig = plot_comparison(signals, name, time, dimension, sig_names)
     % print torques norms
     fig = figure("Name","Obstacle Avoidance through CBF: "+ name);
     [~, num_sig] = size(signals);
-    color = ["#102542", "#23CE6B","#D11149","#EA638C"];
+    color = ["#102542","#23CE6B","#D11149","#EA638C"];%"#102542", 
     hold on
     for i=1:num_sig
         plot(time,cell2mat(signals(i)),'LineWidth',4, 'DisplayName',sig_names(i),'Color',color(i));
@@ -14,5 +14,8 @@ function fig = plot_comparison(signals, name, time, dimension, sig_names)
     grid on;
     set(gca,'FontSize',35);
     set(gca,'FontName',"Latin Modern Math");
+    box on;
+    ax = gca;
+    ax.LineWidth = 2;
 end
 

@@ -10,7 +10,7 @@ function fig = plot_cbf(cbf,time, multiplecbf, colours)
     if multiplecbf
         for i=1:n
             hold on;
-            plot(time,cbf(i,:),'Color',colours(i,:),'LineWidth',4,"DisplayName","h obstacle "+i);
+            plot(time,cbf(i,:),'Color',colours(i,:),'LineWidth',4,"DisplayName","$h_"+i+"$");
             hold on;
         end
         legend('Location','northeast');
@@ -25,5 +25,8 @@ function fig = plot_cbf(cbf,time, multiplecbf, colours)
     grid on;
     set(gca,'FontSize',35);
     set(gca,'FontName',"Latin Modern Math");
+    box on;
+    ax = gca;
+    ax.LineWidth = 2;
 end
 
