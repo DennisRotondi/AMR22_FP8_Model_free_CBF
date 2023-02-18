@@ -8,12 +8,12 @@
 clear; close all; clc;
 set(0, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [20 20 25 25]);
 %% robot initialization
-qstart = [0 0 pi/2]';       % starting pose (x0 y0 theta0)
+qstart = [0 0 pi/2]';        % starting pose (x0 y0 theta0)
 vwstart = [0 0]';            % starting velocities (w0,v0)
 m = 5.3;                     % mass             
 a = 0.1;                     % distance from the center 
 robot_radius = 0.3;
-Icm = 1/2*m*robot_radius^2;   % inertia
+Icm = 1/2*m*robot_radius^2;  % inertia
 params=[m,Icm,a];            % vector of parameters
 M = [m 0; 0 Icm];
 %% simulation stuff
@@ -24,12 +24,12 @@ simTime = 40;                % time of simulation
 MAP = "map_3";
 obstacles = setup_environment(MAP,a,robot_radius);
 [~, num_obs] = size(obstacles);
-disturbance = true;          % if to simulate with disturbance in h or not
+disturbance = true;         % if to simulate with disturbance in h or not
 %% control parameters
 qg=[8 ; -3];                 % qgoal
 Kp = 0.1;                    % proportional
-Kd = 2.7;                    % derivative
-alpha = 0.50;                % barrier certificate param 
+Kd = 2.7;             % derivative
+alpha = 0.5;                 % barrier certificate param 
 delta = 2;                   % barrier parameter
 threshold_skip = 0;          % hysteresis mechanism
 k1 = sqrt(min(eig(M))/2)     % k1 bound defined as in the report
@@ -48,6 +48,8 @@ safe_velocity =  out.safe_velocity.Data;
 tracked_velocity = out.tracked_velocity.Data;
 input_norm = out.input_norm.Data;
 input = out.safe_input.Data;
+theta =  out.theta.Data; 
+safe_input = input;
 cbf = squeeze(out.cbf.Data);
 
 %% plots
@@ -67,22 +69,22 @@ sig_names = ["safe","actual","nominal"];
 dimension = 'velocity, $v$ (m/s)';
 fig4 = plot_comparison(signalsx, name, time, dimension, sig_names);
 
-signalsy = {safe_velocity(:,2), tracked_velocity(:,2), nominal_velocity(2,:)};
+signalsy = {safe_velocity(:,2)};
 name = "Velocity on y";
-sig_names = ["safe","actual","nominal"];
+sig_names = ["safe"];
 dimension = 'angular velocity, $\omega$ (rad/s)';
 fig5 = plot_comparison(signalsy, name, time, dimension, sig_names);
 %multiple input
-name = "Control effort";
-sig_names ='a';
-dimension = 'input, $u_1$ (N)';
-fig7 = plot_comparison({input(:,1)}, name, time, dimension, sig_names);
-b = gca; legend(b,'off');
-name = "Control effort2";
-sig_names ='b';
-dimension = 'input, $u_2$ (N$\cdot$m)';
-fig8 = plot_comparison({input(:,2)}, name, time, dimension, sig_names);
-b = gca; legend(b,'off');
+% name = "Control effort";
+% sig_names ='a';
+% dimension = 'input, $u_1$ (N)';
+% fig7 = plot_comparison({input(:,1)}, name, time, dimension, sig_names);
+% b = gca; legend(b,'off');
+% name = "Control effort2";
+% sig_names ='b';
+% dimension = 'input, $u_2$ (N$\cdot$m)';
+% fig8 = plot_comparison({input(:,2)}, name, time, dimension, sig_names);
+% b = gca; legend(b,'off');
 
 
 list_factory = fieldnames(get(groot,'factory'));

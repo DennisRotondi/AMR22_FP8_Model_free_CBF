@@ -39,6 +39,7 @@ q1 =  out.configuration_vector.Data(:,1);
 q2 =  out.configuration_vector.Data(:,2);
 input_norm =  out.input_norm.Data;
 input = out.input.Data;
+safe_input = input;
 safe_velocity_norm =  out.safe_velocity_norm.Data;
 velocity_norm = out.velocity_norm.Data;
 desired_velocity_norm = out.desired_velocity_norm.Data;
