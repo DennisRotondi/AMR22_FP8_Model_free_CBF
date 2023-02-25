@@ -46,7 +46,7 @@ This additional clearance has resulted in better performances as shown in Figure
 In Simulation 3, in order to approach the same problem directly through the full dynamic model, it is not possible to use CBF \eqref{eq:cbfsim1} since it misses the \textit{relative-degree} one condition with respect to \eqref{eq:pr dyn}. 
 Therefore, we augmented it by adding a velocity term that lets the new $h$ decrease if the robot is moving towards the obstacle and increase on the contrary, as proposed in \cite{vendittelli}
 \begin{equation}\label{eq:difmcbf}
-    h_i(\qv,\dqv)=||\qv-\qv_{\mathcal{O}_i}||^2+\mu(\qv-\qv_{\mathcal{O}_i})^T\dqv,
+    h_i(\qv,\dqv)= d_i - R_{\mathcal{O}_i}+\mu(\qv-\qv_{\mathcal{O}_i})^T\dqv,
 \end{equation}
 with $\mu$ a positive constant, set to $0.8$ in this simulation. We used this in the optimization problem to correct the nominal input generated with:
 \begin{equation}
@@ -158,7 +158,7 @@ Here, controller
 \begin{equation}
     \uv = -\Km_D \dev =  -\Km_D(\vv-\vv_{safe}),
 \end{equation}
-tracks the safe velocity $\vv_{safe}$ from \eqref{eq:optprob} with $\Km_D=2.7\cdot\boldsymbol{I}_{2}$, then we set $K_P=0.1$, $\alpha = 0.50<\lambda=0.51,~\delta=2$ and bound $\dvv_{safe} \leq 0.5$. As shown in Figures~\ref{fig:sim4map}--\ref{fig:sim4h} the unicycle is capable of reaching its destination, but it has to circumvent the obstacles as the clearance, in this case, is $\gamma=1.45$ [m]. In Figure~\ref{fig:sim4v} we can see how the nominal angular velocity generated tries to align the robot with the goal, but due to the safety mechanism that prevents pointing in the direction of the obstacle, a much lower command is produced making the robot take a longer route. Anyway, it is worth noticing how, increasing $\Km_{\!D}$ eigenvalues to reduce the clearance, almost gives perfect tracking of the angular velocity.
+tracks the safe velocity $\vv_{safe}$ from \eqref{eq:optprob} with $\Km_D=2.7\cdot\boldsymbol{I}_{2}$, then we set $K_P=0.1$, $\alpha = 0.50<\lambda=0.51,~\delta=2$ and bound $|\dvv_{safe}| \leq 0.5$. As shown in Figures~\ref{fig:sim4map}--\ref{fig:sim4h} the unicycle is capable of reaching its destination, but it has to circumvent the obstacles as the clearance, in this case, is $\gamma=1.45$ [m]. In Figure~\ref{fig:sim4v} we can see how the nominal angular velocity generated tries to align the robot with the goal, but due to the safety mechanism that prevents pointing in the direction of the obstacle, a much lower command is produced making the robot take a longer route. Anyway, it is worth noticing how, increasing $\Km_{\!D}$ eigenvalues to reduce the clearance, almost gives perfect tracking of the angular velocity.
 %Having an higher $K_D$ to bound $\gamma$ we are able to track very well this velocity.
 %parlare di come tracka bene w visto che è piccolo Icm ma contribisce ad aumentare gamma perché l'eigenvalue di (17) è piccolo + gain aumentati per diminuire clearance
 \subsubsection{Model-based CBF}

@@ -36,7 +36,7 @@ The model considered in this case is
 \end{equation*}
 with control barrier function
 \begin{equation*}
-    h(\pv,\dpv)=||\pv-\qv_\mathcal{O}||^2+\mu(\pv-\qv_\mathcal{O})^T\dpv,
+    h(\qv,\dqv)= d - R_{\mathcal{O}}+\mu(\qv-\qv_{\mathcal{O}})^T\dqv,
 \end{equation*}
 for the obstacle $\mathcal{O}$. The safe input is obtained from the optimization problem
 \begin{equation*}
@@ -47,7 +47,7 @@ for the obstacle $\mathcal{O}$. The safe input is obtained from the optimization
 \end{equation*}
 with
 \begin{equation*}
-    \dot{h}(\pv,\dpv,\uv) = \left( 2 ||x-x_\mathcal{O}|| + \mu \dot{x}\right)\dot{x} + \left( 2 ||y-y_\mathcal{O}|| + \mu \dot{y}\right)\dot{y} + \frac{\mu}{m} \left[ (x-x_\mathcal{O})u_1 + (y-y_\mathcal{O}) u_2 \right].
+    \dot{h}(\pv,\dpv,\uv) = \left[\frac{1}{d}(x-x_\mathcal{O}) + \mu \dot{x}\right]\dot{x} + \left[\frac{1}{d}(y-y_\mathcal{O}) + \mu \dot{y}\right]\dot{y} + \frac{\mu}{m} \left[ (x-x_\mathcal{O})u_1 + (y-y_\mathcal{O}) u_2 \right].
 \end{equation*}
 
 \subsubsection*{Model Free CBF for Unicycle}
