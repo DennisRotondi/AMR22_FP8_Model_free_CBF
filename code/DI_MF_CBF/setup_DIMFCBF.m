@@ -29,7 +29,7 @@ threshold_skip = 0;         % hysteresis mechanism
 alpha = 0.99;               % barrier certificate param 
 k1 = sqrt(min(eig(M))/2)    % k1 bound defined as in the report
 lambda = Kd/max(eig(M))     % stability parameter 
-norm_d_inf = 0.5;
+norm_d_inf = 0.2; %0.2 -> 0.5
 gamma = norm_d_inf/(2*k1*alpha) % gamma function
 %% run simulation
 out = sim('simulation_DIMFCBF');
@@ -52,9 +52,9 @@ cbf = out.cbf.Data;
 %% plots
 % todo: track velocities 
 if disturbance
-    fig1 = plot_map(obstacles,gamma);
+    [fig, colours] = plot_map(obstacles,gamma);
 else
-    fig1 = plot_map(obstacles);
+    [fig, colours] = plot_map(obstacles);
 end
 plot_trajectory(q1,q2,qstart,qg);
 fig2 = plot_cbf(cbf,time);

@@ -5,7 +5,7 @@ time = [0:step:out.cbf.Time(end)];
 
 timestamp = strrep(string(datetime('now'))," ","-");
 v = VideoWriter("animations/sim-"+timestamp+".avi",'Motion JPEG AVI');
-v.Quality = 90;
+v.Quality = 95;
 framerate = round(1/step);
 v.FrameRate = framerate;
 
@@ -18,12 +18,14 @@ min_dist=0.05;
 if uni
     rem = robot_radius;
 end
-if mf 
+if mf
     gg = gamma;
+end
+if uni
     q1 = q1';
     q2 = q2';
 end
-if ~uni && ~mf
+if ~uni
     q1 = q1';
     q2 = q2';
     cbf = squeeze(cbf)';
@@ -45,7 +47,7 @@ fig = figure('Units','pixels','Position', [0 0 1280 1024],'visible',visibility);
 t = tiledlayout(3,4,'TileSpacing','Compact','Padding','Compact');
 spax = nexttile([3 3]);
 set(gca,'Color',"#F7F7FF")
-colours = plot_mapan(obstacles,gg, rem);
+plot_mapan(obstacles,colours,gg, rem);
 plot(qstart(1),qstart(2),'marker','o','Color','red','MarkerSize',18,'MarkerFaceColor','red'); 
 plot(qg(1),qg(2),'marker','o','Color','green','MarkerSize',18,'MarkerFaceColor','green');
 
@@ -63,7 +65,7 @@ for i=1:length(time)
     if norm([q1i;q2i]-[q1(1,end);q2(1,end)]) < min_dist
         break;
     end
-    disp(i)
+    disp(i);
 end
 time = time(1,1:i);
 
@@ -115,30 +117,30 @@ close(v);
 close(fig);
 disp("...video saved")
 
-function [colours] = plot_mapan(obstacles, gamma, rem)
+function plot_mapan(obstacles,colours, gamma, rem)
     if nargin < 2
         gamma = 0;
         rem = 0;
     end
+    global mf uni
     % plot obstacles 
     [~, num_obs] = size(obstacles);
     axis("equal");
-    xlabel('position, $q_1$ (m)','Interpreter','latex', "FontSize",30);
-    ylabel('position, $q_2$ (m)','Interpreter','latex', "FontSize",30);
+    xlabel('position, $q_1$ (m)','Interpreter','latex');
+    ylabel('position, $q_2$ (m)','Interpreter','latex');
     hold on;
-    colours = zeros(num_obs,3);
     for i = 1:num_obs
         ob = obstacles(:,i);
         ob(3) = ob(3)-rem;
         th = 0:pi/50:2*pi;
-        col = rand(1,3);
-        colours(i,:) = col;
+        col = colours(i,:);
         if ob(4)+gamma ~= 0
             xunit_clearance = (ob(3)+ob(4)+gamma) * cos(th) + ob(1);
             yunit_clearance = (ob(3)+ob(4)+gamma) * sin(th) + ob(2);
             plot(xunit_clearance, yunit_clearance, '--','LineWidth',3, 'Color', col);
         end
     end
+    set(gca,'FontSize',20);
     for i = 1:num_obs
         ob = obstacles(:,i);
         ob(3) = ob(3)-rem;
@@ -148,9 +150,8 @@ function [colours] = plot_mapan(obstacles, gamma, rem)
         col=colours(i,:);
         plot(xunit, yunit,'color', 'k','LineWidth',6);
         fill(xunit, yunit, col)
-        text(ob(1)-0.3,ob(2),"$O_"+ num2str(i) +"$",'Interpreter','latex','FontSize',40,'Color','white');
+        text(ob(1)-0.3,ob(2),"$O_"+ num2str(i) +"$",'Interpreter','latex','FontSize',35,'Color','white');
     end
-    set(gca,'FontSize',35);
     set(gca,'FontName',"Latin Modern Math");
     box on;
     ax = gca;
@@ -216,7 +217,7 @@ function plot_single(signals, time, i, dimension)
 end
 
 function plot_trajan(q1,q2,theta, uni)
-    persistent ff mm
+    persistent ff mm ll
     if uni
         robot_radius=0.3;
         a = 0.1;
@@ -229,15 +230,20 @@ function plot_trajan(q1,q2,theta, uni)
         ff = fill(xunit,yunit,[0.16,0.62,0.57],'FaceAlpha',0.9);
         ff.LineWidth = 3;
         ff.EdgeColor = [0.1882 0.1882 0.1882];
+        ll = plot([q1-a*cos(theta), robot_radius * cos(theta) + q1-a*cos(theta)],...
+            [q2-a*sin(theta), robot_radius * sin(theta) + q2-a*sin(theta)],'LineWidth',3, 'Color', 'red');
+    end
+    if isempty(mm)
         mm = plot(q1,q2,'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
     end
-    plot(q1,q2,'marker','o','Color','blue','MarkerSize',8,'MarkerFaceColor','blue');
+    plot(q1,q2,'marker','o','Color','blue','MarkerSize',5,'MarkerFaceColor','blue');
     box on;
     ax = gca;
     ax.LineWidth = 2;
+    delete(mm);
     if uni
         delete(ff);
-        delete(mm);
+        delete(ll);
         th = 0:pi/50:2*pi;
         xunit = robot_radius * cos(th) + q1-a*cos(theta);
         yunit = robot_radius * sin(th) + q2-a*sin(theta);
@@ -245,6 +251,8 @@ function plot_trajan(q1,q2,theta, uni)
         ff = fill(xunit,yunit,[0.16,0.62,0.57],'FaceAlpha',0.9);
         ff.LineWidth = 3;
         ff.EdgeColor = [0.1882 0.1882 0.1882];
-        mm = plot(q1,q2,'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
+        ll = plot([q1, robot_radius * cos(theta) + q1-a*cos(theta)],...
+            [q2, robot_radius * sin(theta) + q2-a*sin(theta)],'LineWidth',3, 'Color', 'red');
     end
+    mm = plot(q1,q2,'marker','o','Color','k','MarkerSize',5,'MarkerFaceColor','green');
 end

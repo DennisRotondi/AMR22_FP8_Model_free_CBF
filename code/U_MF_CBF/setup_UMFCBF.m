@@ -24,12 +24,13 @@ simTime = 40;                % time of simulation
 MAP = "map_3";
 obstacles = setup_environment(MAP,a,robot_radius);
 [~, num_obs] = size(obstacles);
-disturbance = true;         % if to simulate with disturbance in h or not
+disturbance = true;          % if to simulate with disturbance in h or not
 %% control parameters
 qg=[8 ; -3];                 % qgoal
 Kp = 0.1;                    % proportional
-Kd = 2.7;             % derivative
-alpha = 0.5;                 % barrier certificate param 
+Kd = 2.7;                    % derivative
+alpha = 0.5;                 % barrier certificate param
+ro = 1;
 delta = 2;                   % barrier parameter
 threshold_skip = 0;          % hysteresis mechanism
 k1 = sqrt(min(eig(M))/2)     % k1 bound defined as in the report
@@ -59,7 +60,7 @@ else
     [fig1, colours] = plot_map(obstacles);
 end
 plot_trajectory(q1,q2,qstart,qg)
-fig2 = plot_cbf(cbf,time, true, colours);
+fig2 = plot_cbf(cbf,time, num_obs>1, colours);
 yline(gamma,'LineWidth',4,'Color','blue','HandleVisibility','off')
 % fig3 = plot_evolution(q1,q2,qg,time);
 

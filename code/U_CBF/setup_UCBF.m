@@ -14,7 +14,7 @@ robot_radius = 0.3;
 m = 5.3;                   % mass
 Icm = 1/2*m*robot_radius^2;% inertia
 a = 0.1;                   % distance from the center 
-m2 = m;
+m2 = 3;
 Icm2 = 1/2*m2*robot_radius^2;
 params = [m2,Icm2,a];      % vector of parameters
 %% simulation stuff
